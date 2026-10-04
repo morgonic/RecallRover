@@ -3,9 +3,15 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from collections.abc import AsyncGenerator
+from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
+from fastapi import Depends
 
 # base class for SQLAlchemy models to inherit from
 class Base(DeclarativeBase):
+    pass
+
+# fastapi users user model class for db
+class User(SQLAlchemyBaseUserTableUUID, Base):
     pass
 
 # SQLite db file name and url
@@ -25,3 +31,7 @@ async def create_db_and_tables():
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
         yield session
+
+# function for getting user db for fastapi users
+async def get_user_db(session: AsyncSession = Depends(get_async_session)):
+    yield SQLAlchemyUserDatabase(session, User)
