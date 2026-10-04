@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[codz]
+
+# SQLite database
+*.db
+
+# Environments
+.env
+.venv
+env/
+venv/
