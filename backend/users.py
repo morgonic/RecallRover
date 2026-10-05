@@ -36,7 +36,7 @@ bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 # function for getting JWT strategy
 def get_jwt_strategy() -> JWTStrategy[models.UP, models.ID]:
-    return JWTStrategy(secret=SECRET, lifetime_seconds=10)
+    return JWTStrategy(secret=SECRET, lifetime_seconds=3600)
 
 # FastAPI Users authentication backend setup
 auth_backend = AuthenticationBackend(
