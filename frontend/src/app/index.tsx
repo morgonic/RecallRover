@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 import { Link, router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { deleteToken, getGuest, getToken } from "./storage";
+import { styles } from './styles';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -59,16 +60,16 @@ export default function Index() {
       ) : (
         <>
           <View style={styles.navigationBar}>
-            <Link href="/search" style={styles.button}>
+            <Link href="/search" style={styles.navButton}>
               Search
             </Link>
-            <Link href="/" style={styles.button}>
+            <Link href="/" style={styles.navButton}>
               Recall Feed
             </Link>
-            <Link href="/watch-list" style={styles.button}>
+            <Link href="/watch-list" style={styles.navButton}>
               Watch List
             </Link>
-            <Link href="/login" style={styles.button}>
+            <Link href="/login" style={styles.navButton}>
               {loggedIn }
               Log In
             </Link>
@@ -81,21 +82,3 @@ export default function Index() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  button: {
-    fontSize: 18,
-    textDecorationLine: 'underline',
-    color: '#000',
-    marginTop: 20,
-    marginHorizontal: 10
-  },
-  navigationBar: {
-    flexDirection: 'row'
-  }
-});

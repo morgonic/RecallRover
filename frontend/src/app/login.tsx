@@ -1,19 +1,20 @@
 // Log In screen
 
-import { Text, View, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
+import { Text, View, TextInput, Pressable } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { router } from 'expo-router';
 import { deleteGuest, setGuest, setToken } from '@/app/storage';
 import validator from 'validator';
+import { styles } from './styles';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 
 export default function LoginScreen() {
-    const [email, onChangeEmail] = useState("")
-    const [password, onChangePassword] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
     const [securePass, setSecurePass] = useState(true)
     const canLogIn = (email.trim() != '' && password != '')
     const [invalidEmail, setInvalidEmail] = useState(false)
@@ -37,9 +38,11 @@ export default function LoginScreen() {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: body.toString()
             })
+            // get json from response
+            const json = await response.json()
             // error if bad response
             if (!response.ok) {
-                if ((await response.json()).detail == "LOGIN_BAD_CREDENTIALS") {
+                if (json.detail == "LOGIN_BAD_CREDENTIALS") {
                     setLoginError("Invalid email or password. Please try again.");
                 }
                 else {
@@ -48,7 +51,6 @@ export default function LoginScreen() {
                 throw new Error(`HTTP ${response.status}`)
             }
             // get access token from json response and store it
-            const json = await response.json()
             await setToken(json.access_token)
             // clear guest flag, not a guest anymore
             await deleteGuest();
@@ -77,7 +79,7 @@ export default function LoginScreen() {
                 <View style={{alignItems: 'flex-start', marginLeft: 30}}>
                 <TextInput 
                     style={styles.textinput}
-                    onChangeText={onChangeEmail}
+                    onChangeText={setEmail}
                     value={email}
                     placeholder='Email address'
                     placeholderTextColor={'grey'}
@@ -92,7 +94,7 @@ export default function LoginScreen() {
                 <View style={{flexDirection: 'row'}}>
                     <TextInput 
                     style={styles.textinput}
-                    onChangeText={onChangePassword}
+                    onChangeText={setPassword}
                     value={password}
                     placeholder='Password'
                     placeholderTextColor={'grey'}
@@ -167,54 +169,3 @@ export default function LoginScreen() {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#ffffff',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    title: {
-        color: '#000',
-        fontSize: 24,
-        fontWeight: 'bold',
-        margin: 20,
-    },
-    textinput: {
-        height: 50,
-        width: 300,
-        margin: 10,
-        borderWidth: 1,
-        borderRadius: 10,
-        padding: 10,
-    },
-    button: {
-        backgroundColor: "#4175c4",
-        flex: 1,
-        justifyContent: 'center',
-        height: 50,
-        width: 140,
-        borderRadius: 10,
-        margin: 10,
-        padding: 10
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    buttonGuest: {
-        fontSize: 20,
-        textDecorationLine: 'underline',
-        fontWeight: '600',
-        marginTop: 60
-    },
-    forgotPass: {
-        fontSize: 16,
-        textDecorationLine: 'underline',
-        fontWeight: '500',
-        color: '#242424'
-    }
-})
