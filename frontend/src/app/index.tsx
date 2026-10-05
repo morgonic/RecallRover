@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 import { Link, router } from 'expo-router';
 import { useEffect, useState } from "react";
-import { deleteToken, getToken } from "./storage";
+import { deleteToken, getGuest, getToken } from "./storage";
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -36,8 +36,16 @@ export default function Index() {
         }
       }
       else {
-        console.log("No access token, going back to login.")
-        router.replace('/login')
+        console.log("No access token, checking if guest.")
+        const isGuest = await getGuest();
+        if (!isGuest) {
+          console.log("Not a guest, going to login.")
+          router.replace('/login')
+        }
+        else {
+          setCheckingAuth(false)
+          console.log("Guest has access.")
+        }
       }
     }
 

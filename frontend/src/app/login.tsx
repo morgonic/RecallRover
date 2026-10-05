@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, TextInput, Pressable, Alert } from 'react-nativ
 import { useState } from 'react';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { router } from 'expo-router';
-import { setToken } from '@/app/storage';
+import { deleteGuest, setGuest, setToken } from '@/app/storage';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -37,6 +37,8 @@ export default function LoginScreen() {
             // get access token from json response and store it
             const json = await response.json()
             await setToken(json.access_token)
+            // clear guest flag, not a guest anymore
+            await deleteGuest();
             // redirect to recall feed (index) after login
             router.replace('/')
         }
@@ -52,6 +54,7 @@ export default function LoginScreen() {
 
     {/*function called when continue as guest button pressed*/}
     async function onContinueGuest() {
+        await setGuest();
         router.replace('/')
     }
 
