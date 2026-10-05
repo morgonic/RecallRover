@@ -3,16 +3,46 @@
 import { Text, View, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
-import { router, useRouter } from 'expo-router';
+import { router } from 'expo-router';
+import { setToken } from '@/app/storage';
+
+// FastAPI url for fetch calls
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
 
 export default function LoginScreen() {
     const [email, onChangeEmail] = useState("")
     const [password, onChangePassword] = useState("")
     const [securePass, setSecurePass] = useState(true)
 
+
     {/*function called when log in button pressed*/}
     async function onLogin() {
-        {/*TODO: add try catch fetch to fastapi users /auth/jwt/login route*/}
+        try {
+            // attach username (email) and password to urlsearchparams for fastapi users /login
+            const body = new URLSearchParams()
+            body.append('username', email.trim())
+            body.append('password', password)
+
+            // send request to /login route
+            const response = await fetch(`${API_URL}/auth/jwt/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: body.toString()
+            })
+            // error if bad response
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`)
+            }
+            // get access token from json response and store it
+            const json = await response.json()
+            await setToken(json.access_token)
+            // redirect to recall feed (index) after login
+            router.replace('/')
+        }
+        catch (e: any) {
+            console.log(`Error ${e.name}: ${e.message}`)
+        }
     }
 
     {/*function called when create account button pressed*/}
@@ -71,7 +101,7 @@ export default function LoginScreen() {
                         </Text>
                     </Pressable>
                     <Pressable
-                        onPress={() => {}}
+                        onPress={onLogin}
                         style={({pressed}) =>
                             [styles.button,
                             {backgroundColor: pressed ? '#25426e' : '#4175c4'}]

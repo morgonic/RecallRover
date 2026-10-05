@@ -1,10 +1,16 @@
 # main FastAPI server file
 
 from fastapi import FastAPI, Depends
-from database import create_db_and_tables
+from fastapi.middleware.cors import CORSMiddleware
+from database import create_db_and_tables, User
 from contextlib import asynccontextmanager
 from schemas import UserRead, UserCreate, UserUpdate
 from users import auth_backend, current_active_user, fastapi_users
+from dotenv import load_dotenv
+import os
+
+# loading environment variables from .env file
+load_dotenv()
 
 # lifespan for FastAPI app, creates database/tables on startup
 @asynccontextmanager
@@ -14,6 +20,18 @@ async def lifespan(app: FastAPI):
 
 # FastAPI app instance with lifespan
 app = FastAPI(lifespan=lifespan)
+
+# origins for corsmiddleware
+origins = [os.getenv('CORS_ORIGINS')]
+
+# corsmiddleware for frontend/backend communication
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 
 # test endpoint to check if server is running
 @app.get("/")
