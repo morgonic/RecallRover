@@ -14,6 +14,7 @@ export default function LoginScreen() {
     const [email, onChangeEmail] = useState("")
     const [password, onChangePassword] = useState("")
     const [securePass, setSecurePass] = useState(true)
+    const canLogIn = (email.trim() != '' && password != '')
 
 
     {/*function called when log in button pressed*/}
@@ -107,8 +108,9 @@ export default function LoginScreen() {
                         onPress={onLogin}
                         style={({pressed}) =>
                             [styles.button,
-                            {backgroundColor: pressed ? '#25426e' : '#4175c4'}]
+                            {backgroundColor: !canLogIn ? '#bfc0c0' : pressed ? '#25426e' : '#4175c4'}]
                         }
+                        disabled={!canLogIn}
                     >
                         <Text style={styles.buttonText}>
                             Log In
