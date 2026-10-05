@@ -17,6 +17,7 @@ export default function LoginScreen() {
     const [securePass, setSecurePass] = useState(true)
     const canLogIn = (email.trim() != '' && password != '')
     const [invalidEmail, setInvalidEmail] = useState(false)
+    const [loginError, setLoginError] = useState('')
 
 
     {/*function called when log in button pressed*/}
@@ -38,6 +39,12 @@ export default function LoginScreen() {
             })
             // error if bad response
             if (!response.ok) {
+                if ((await response.json()).detail == "LOGIN_BAD_CREDENTIALS") {
+                    setLoginError("Invalid email or password. Please try again.");
+                }
+                else {
+                    setLoginError('')
+                }
                 throw new Error(`HTTP ${response.status}`)
             }
             // get access token from json response and store it
@@ -104,6 +111,13 @@ export default function LoginScreen() {
 
                     </Pressable> 
                 </View>
+                {(loginError != '') ? (
+                    <Text style={{fontSize: 12, color: '#b10000', marginLeft: 20}}>
+                        {loginError}
+                    </Text>
+                ) : (
+                    <View style={{height: 14}}/>
+                )}
                 <View style={{flexDirection: 'row'}}>
                     <Pressable
                         onPress={onCreateAccount}
