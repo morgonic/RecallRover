@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { router } from 'expo-router';
 import { deleteGuest, setGuest, setToken } from '@/app/storage';
+import validator from 'validator';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -15,10 +16,14 @@ export default function LoginScreen() {
     const [password, onChangePassword] = useState("")
     const [securePass, setSecurePass] = useState(true)
     const canLogIn = (email.trim() != '' && password != '')
+    const [invalidEmail, setInvalidEmail] = useState(false)
 
 
     {/*function called when log in button pressed*/}
     async function onLogin() {
+        if (!validator.isEmail(email)) {
+            setInvalidEmail(true)
+        }
         try {
             // attach username (email) and password to urlsearchparams for fastapi users /login
             const body = new URLSearchParams()
@@ -70,6 +75,13 @@ export default function LoginScreen() {
                     placeholder='Email address'
                     placeholderTextColor={'grey'}
                 />
+                {invalidEmail ? (
+                    <Text style={{fontSize: 12, color: '#b10000', marginLeft: 20}}>
+                        Please enter a valid email address.
+                    </Text>
+                ) : (
+                    <View style={{height: 14}}/>
+                )}
                 <View style={{flexDirection: 'row'}}>
                     <TextInput 
                     style={styles.textinput}
@@ -156,17 +168,18 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     textinput: {
-        height: 40,
+        height: 50,
         width: 300,
         margin: 10,
         borderWidth: 1,
+        borderRadius: 10,
         padding: 10,
     },
     button: {
         backgroundColor: "#4175c4",
         flex: 1,
         justifyContent: 'center',
-        height: 40,
+        height: 50,
         width: 140,
         borderRadius: 10,
         margin: 10,
@@ -187,6 +200,7 @@ const styles = StyleSheet.create({
     forgotPass: {
         fontSize: 16,
         textDecorationLine: 'underline',
-        fontWeight: '500'
+        fontWeight: '500',
+        color: '#242424'
     }
 })
