@@ -18,10 +18,10 @@ test_params = {
     'RecallDateEnd' : ''
 }
 # test parameters for product name only
-test_product_name = {'ProductName': 'stroller'}
+test_product_name = {'ProductName': 'Thule Sleek Car Seat Adapters'}
 # test parameters for upc only
 # DOES NOT WORK FOR SOME REASON
-test_upc = {'UPC': '680079015930'}
+test_upc = {'UPC': '091021188099'}
 # test parameters for date range only
 test_date_range = {
     'RecallDateStart': '2026-08-01',
@@ -61,10 +61,10 @@ async def test_search_recalls(params, timeout=timeout):
             # return json list
             return response.json()
         except httpx.HTTPError as exc:
-            logger.error(f'HTTP Exception for {exc.request.url} - {exc}')
+            logger.error(f'HTTP Exception for {exc.request.url} - {type(exc).__name__}: {exc}')
             return []
         except ValueError as exc:
-            logger.error(f'Invalid JSON response for {request.url} - {exc}')
+            logger.error(f'Invalid JSON response for {request.url} - {type(exc).__name__}: {exc}')
             return []
 
 if __name__ == '__main__':
@@ -73,27 +73,11 @@ if __name__ == '__main__':
         datefmt="%Y-%m-%d %H:%M:%S",
         level=logging.INFO
     )
-    all_params_test = asyncio.run(test_search_recalls(test_params, timeout))
-    product_name_test = asyncio.run(test_search_recalls(test_product_name, timeout))
-    date_range_test = asyncio.run(test_search_recalls(test_date_range, timeout))
-    upc_test = asyncio.run(test_search_recalls(test_upc, timeout))
+    # timeout test
+    test_timeout = httpx.Timeout(0.001)
+    all_params_test = asyncio.run(test_search_recalls(test_params, test_timeout))
     print(f'[All Params]\nNumber of recalls: {len(all_params_test)}')
     if (len(all_params_test) != 0): 
         print(f'First recall title: {all_params_test[0]['Title']}')
-    else:
-        print('No recalls found.')
-    print(f'[Product Name]\nNumber of recalls: {len(product_name_test)}')
-    if (len(product_name_test) != 0): 
-        print(f'First recall title: {product_name_test[0]['Title']}')
-    else:
-        print('No recalls found.')
-    print(f'[Date Range]\nNumber of recalls: {len(date_range_test)}')
-    if (len(date_range_test) != 0): 
-        print(f'First recall title: {date_range_test[0]['Title']}')
-    else:
-        print('No recalls found.')
-    print(f'[UPC]\nNumber of recalls: {len(upc_test)}')
-    if (len(upc_test) != 0): 
-        print(f'First recall title: {upc_test[0]['Title']}')
     else:
         print('No recalls found.')
