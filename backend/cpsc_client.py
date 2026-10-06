@@ -18,7 +18,7 @@ test_params = {
     'RecallDateEnd' : ''
 }
 # test parameters for product name only
-test_product_name = {'ProductName': 'grill brush'}
+test_product_name = {'ProductName': 'stroller'}
 # test parameters for upc only
 # DOES NOT WORK FOR SOME REASON
 test_upc = {'UPC': '680079015930'}
@@ -52,10 +52,7 @@ async def test_search_recalls(params, timeout=timeout):
     async with httpx.AsyncClient() as client:
         # build request
         request = client.build_request('GET', CPSC_URL, params=params, timeout=timeout)
-        # convert request url to string and print for testing
-        request_url = str(request.url)
-        print(request_url)
-
+        
         try:
             # send request
             response = await client.send(request)
@@ -76,4 +73,27 @@ if __name__ == '__main__':
         datefmt="%Y-%m-%d %H:%M:%S",
         level=logging.INFO
     )
-    asyncio.run(test_search_recalls(test_params, timeout))
+    all_params_test = asyncio.run(test_search_recalls(test_params, timeout))
+    product_name_test = asyncio.run(test_search_recalls(test_product_name, timeout))
+    date_range_test = asyncio.run(test_search_recalls(test_date_range, timeout))
+    upc_test = asyncio.run(test_search_recalls(test_upc, timeout))
+    print(f'[All Params]\nNumber of recalls: {len(all_params_test)}')
+    if (len(all_params_test) != 0): 
+        print(f'First recall title: {all_params_test[0]['Title']}')
+    else:
+        print('No recalls found.')
+    print(f'[Product Name]\nNumber of recalls: {len(product_name_test)}')
+    if (len(product_name_test) != 0): 
+        print(f'First recall title: {product_name_test[0]['Title']}')
+    else:
+        print('No recalls found.')
+    print(f'[Date Range]\nNumber of recalls: {len(date_range_test)}')
+    if (len(date_range_test) != 0): 
+        print(f'First recall title: {date_range_test[0]['Title']}')
+    else:
+        print('No recalls found.')
+    print(f'[UPC]\nNumber of recalls: {len(upc_test)}')
+    if (len(upc_test) != 0): 
+        print(f'First recall title: {upc_test[0]['Title']}')
+    else:
+        print('No recalls found.')
