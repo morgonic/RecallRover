@@ -1,7 +1,8 @@
 # SQLite database setup file
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, String, JSON
 from collections.abc import AsyncGenerator
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from fastapi import Depends
@@ -13,6 +14,50 @@ class Base(DeclarativeBase):
 # fastapi users user model class for db
 class User(SQLAlchemyBaseUserTableUUID, Base):
     pass
+
+### Recall models ###
+
+class Recall(Base):
+    __tablename__ = 'recalls'
+
+    recall_id: Mapped[int] = mapped_column(primary_key=True)
+    recall_number: Mapped[str | None] = mapped_column(String(100))
+    recall_date: Mapped[str | None] = mapped_column(String(30))
+    last_publish_date: Mapped[str | None] = mapped_column(String(30))
+    title: Mapped[str | None] = mapped_column(String())
+    description: Mapped[str | None] = mapped_column(String())
+    url: Mapped[str | None] = mapped_column(String())
+    consumer_contact: Mapped[str | None] = mapped_column(String())
+    products: Mapped[list['RecallProduct']] = relationship(back_populates='recall')
+    product_upcs: Mapped[list[dict] | None] = mapped_column(JSON)
+    images: Mapped[list[dict] | None] = mapped_column(JSON)
+    hazards: Mapped[list[dict] | None] = mapped_column(JSON)
+    injuries: Mapped[list[dict] | None] = mapped_column(JSON)
+    remedies: Mapped[list[dict] | None] = mapped_column(JSON)
+    remedy_options: Mapped[list[dict] | None] = mapped_column(JSON)
+    manufacturers: Mapped[list[dict] | None] = mapped_column(JSON)
+    retailers: Mapped[list[dict] | None] = mapped_column(JSON)
+    importers: Mapped[list[dict] | None] = mapped_column(JSON)
+    distributors: Mapped[list[dict] | None] = mapped_column(JSON)
+
+class RecallProduct(Base):
+    __tablename__ = 'recall_products'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    recall_id: Mapped[int] = mapped_column(ForeignKey('recalls.recall_id'))
+    recall: Mapped['Recall'] = relationship(back_populates='products')
+    product_name: Mapped[str | None] = mapped_column(String())
+    product_description: Mapped[str | None] = mapped_column(String())
+    product_model: Mapped[str | None] = mapped_column(String(100))
+    product_type: Mapped[str | None] = mapped_column(String(100))
+    upcs: Mapped[list[str] | None] = mapped_column(JSON)
+    category_id: Mapped[str | None] = mapped_column(String(100))
+
+class DailyCheckLog(Base):
+    __tablename__ = 'daily_check_logs'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    last_check_date: Mapped[str | None] = mapped_column(String(30))
 
 # SQLite db file name and url
 sqlite_file_name = "recallrover.db"
