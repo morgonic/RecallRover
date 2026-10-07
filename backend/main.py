@@ -1,13 +1,17 @@
 # main FastAPI server file
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from database import create_db_and_tables, User
 from contextlib import asynccontextmanager
-from schemas import UserRead, UserCreate, UserUpdate
+from schemas import UserRead, UserCreate, UserUpdate, RecallDetails, RecallSummary
 from users import auth_backend, current_active_user, fastapi_users
+from cpsc_client import search_recalls
+from recall_helpers import build_recall_summary
 from dotenv import load_dotenv
 import os
+import logging
+import datetime as dt
 
 # loading environment variables from .env file
 load_dotenv()
@@ -33,11 +37,13 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-# test endpoint to check if server is running
-@app.get("/")
-async def root():
-    return {"message": "FastAPI server is running."}
-
+# basic config for logger
+logging.basicConfig(
+    format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 
 ## FastAPI Users routes ##
@@ -68,6 +74,66 @@ app.include_router(
     tags=["users"]
 )
 
+# test endpoint to check if server is running
+@app.get("/")
+async def root():
+    return {"message": "FastAPI server is running."}
+
 @app.get("/authenticated-route")
 async def authenticated_route(user: User = Depends(current_active_user)):
     return {"message": f"Hello {user.email}!"}
+
+
+## Recalls routes ##
+
+# search endpoint
+@app.get('/recalls/search', response_model=list[RecallSummary], tags=['recalls'])
+async def search_cpsc_recalls(
+    product_name: str | None = None, 
+    product_model: str | None = None, 
+    product_brand: str | None = None, 
+    product_upc: str | None = None,
+    recall_date_start: str | None = None,
+    recall_date_end: str | None = None
+):
+    # all search terms empty, log warning, raise exception
+    if (
+        (product_name == None) &
+        (product_model == None) &
+        (product_brand == None) &
+        (product_upc == None) &
+        (recall_date_start == None) &
+        (recall_date_end == None)
+    ):
+        logger.warning('Search prevented for no search terms.')
+        raise HTTPException(status_code=400, detail='Needs at least one search term.')
+
+    # if no date range, set to last 20 years
+    if ((recall_date_start == None) & (recall_date_end == None)):
+        recall_date_end = dt.date.today()
+        recall_date_start = recall_date_end.replace(year=recall_date_end.year - 20)
+        recall_date_end = recall_date_end.isoformat()
+        recall_date_start = recall_date_start.isoformat()
+
+    # build search parameters
+    search_params = {
+        'ProductName': product_name,
+        'ProductModel': product_model,
+        'RecallTitle': product_brand,
+        'UPC': product_upc,
+        'RecallDateStart': recall_date_start,
+        'RecallDateEnd': recall_date_end
+    }
+
+    # call cpsc client to search using search parameters
+    recalls = await search_recalls(search_params)
+    summaries = []
+    # build recalldetails and recallsummary for each recall
+    for recall in recalls:
+        details = RecallDetails.model_validate(recall)
+
+        summary = build_recall_summary(details)
+        # add summary to list of summaries
+        summaries.append(summary)
+    # return list of summaries
+    return summaries

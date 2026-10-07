@@ -4,6 +4,13 @@ import httpx
 import asyncio
 import logging
 
+# basic config for logger
+logging.basicConfig(
+    format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.INFO
+)
+
 # create error logger
 logger = logging.getLogger(__name__)
 
@@ -19,8 +26,10 @@ timeout = httpx.Timeout(10.0, connect=5.0)
 def delete_empty_params(params):
     keys_to_delete = []
     for key, val in params.items():
-        if (val == ''):
+        # remove keys with empty or None values
+        if ((val == '') | (val == None)):
             keys_to_delete.append(key)
+    # delete keys from search params
     for key in keys_to_delete:
             del params[key]
 
@@ -51,11 +60,6 @@ async def search_recalls(params, timeout=timeout):
 
 # for test runs
 if __name__ == '__main__':
-    logging.basicConfig(
-        format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-        level=logging.INFO
-    )
     # test parameters for test search function with client
     test_params = {
         'ProductName': 'grill brush',
