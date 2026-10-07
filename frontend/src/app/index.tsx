@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
+import { Text, View, ActivityIndicator } from "react-native";
 import { Link, router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { deleteToken, getGuest, getToken } from "./storage";

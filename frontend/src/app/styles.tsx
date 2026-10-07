@@ -66,5 +66,16 @@ export const styles = StyleSheet.create({
     },
     navigationBar: {
         flexDirection: 'row'
+    },
+    searchButton: {
+        backgroundColor: "#4175c4",
+        flex: 1,
+        justifyContent: 'center',
+        height: 50,
+        width: 50,
+        borderRadius: 10,
+        margin: 10,
+        padding: 10,
+        alignItems: 'center'
     }
 })
