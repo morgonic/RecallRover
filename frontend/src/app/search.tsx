@@ -1,14 +1,21 @@
 // Search screen
 
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator } from 'react-native';
 import { styles } from './styles';
 import { Link, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken } from "./storage";
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { RecallSummary } from '../../types/recall';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
+// function for formatting the date from iso to localdatestring
+function formatDate(oldDate: string) {
+    let newDate = new Date(oldDate)
+    return newDate.toLocaleDateString()
+}
 
 export default function SearchScreen() {
     const [checkingAuth, setCheckingAuth] = useState(true);
@@ -17,7 +24,61 @@ export default function SearchScreen() {
     const [productName, setProductName] = useState('')
     const [productBrand, setProductBrand] = useState('')
     const [productModel, setProductModel] = useState('')
+
+    const [results, setResults] = useState<RecallSummary[]>([])
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [hasSearched, setHasSearched] = useState(false)
+
+    const searchDisabled = (
+        (productName == '') && (productBrand == '') && (productModel == '') ||
+        (loading == true)
+    )
     
+    // onPress fucntion for search button
+    async function onSearchButton() {
+        setHasSearched(false)
+
+        const searchParams = new URLSearchParams()
+        if (productName != '') {
+            searchParams.append('product_name', productName)
+        }
+        if (productBrand != '') {
+            searchParams.append('product_brand', productBrand)
+        }
+        if (productModel != '') {
+            searchParams.append('product_model', productModel)
+        }
+
+        setLoading(true)
+        setError(null)
+        setResults([])
+
+        try {
+            const response = await fetch(`${API_URL}/recalls/search?${searchParams.toString()}`, {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'}
+            })
+            const json = await response.json()
+
+            if (!response.ok) {
+                setError((json.detail).toString())
+            }
+            else {
+                setResults(json)
+                setHasSearched(true)
+            }
+        }
+        catch (e: any) {
+            console.error(e.message)
+            setError(e.message)
+        }
+        finally {
+            setLoading(false)
+        }
+    }
+
+    // checking if logged in to swap Log In / Log Out button
     useEffect(() => {
         const checkAuth = async () => {
           const token = await getToken();
@@ -29,10 +90,9 @@ export default function SearchScreen() {
               })
               if (!response.ok) {
                 await deleteToken();
-                router.replace('/login')
               }
               else {
-                console.log("Token validated, logging in.")
+                console.log("Token validated, user is logged in.")
                 setCheckingAuth(false);
                 setLoggedIn(true);
               }
@@ -40,19 +100,19 @@ export default function SearchScreen() {
             catch (e: any) {
               console.log("Couldn't validate token.")
               console.error(e.message)
-              router.replace('/login')
             }
           }
           else {
             console.log("No access token, checking if guest.")
             const isGuest = await getGuest();
             if (!isGuest) {
-              console.log("Not a guest, going to login.")
-              router.replace('/login')
+              console.log("Not a guest.")
+              setLoggedIn(false)
             }
             else {
               setCheckingAuth(false)
               console.log("Guest has access.")
+              setLoggedIn(false)
             }
           }
         }
@@ -101,8 +161,12 @@ export default function SearchScreen() {
                     placeholderTextColor={'grey'}
                 />
                 <Pressable
-                    style={styles.searchButton}
-                    onPress={() => {}}
+                    style={({pressed}) =>
+                        [styles.searchButton,
+                        {backgroundColor: searchDisabled ? '#bfc0c0' : pressed ? '#25426e' : '#4175c4'}]
+                    }
+                    onPress={onSearchButton}
+                    disabled={searchDisabled}
                 >
                     <Ionicons name='search' size={40} color='white'/>
                 </Pressable>
@@ -113,7 +177,62 @@ export default function SearchScreen() {
                     <Ionicons name='barcode-outline' size={40} color='white'/>
                 </Pressable>
             </View>
+
             <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
+
+            {(!loading && (results.length > 0)) ? (
+                <FlatList
+                    data={results}
+                    numColumns={3}
+                    keyExtractor={(recall) => String(recall.RecallID)}
+                    renderItem={({item}) => (
+                        <View style={styles.resultsCard}>
+                            <Text 
+                                style={styles.resultsTitle}
+                                numberOfLines={2}
+                            >
+                                {item.Title}
+                            </Text>
+                            <Text style={styles.resultsDate}>{formatDate(item.RecallDate!!)}</Text>
+                            
+                            {(item.Image != null) ? (
+                                <Image 
+                                    style={styles.resultsImage}
+                                    source={{uri: item.Image}}
+                                />
+                            ) : (
+                                <Image 
+                                    style={styles.resultsImage}
+                                    source={require('../../assets/images/No_Image_Available.jpg')}
+                                />
+                            )}
+                            
+                            <Text 
+                                style={styles.resultsProductName}
+                                numberOfLines={1}
+                            >
+                                {item.ProductName}
+                            </Text>
+                            <Text 
+                                style={styles.resultsHazard}
+                                numberOfLines={3}
+                            >
+                                {item.Hazard}
+                            </Text>
+                        </View>
+                    )}
+                />
+            ) : loading ? (
+                <ActivityIndicator size='large'/>
+            ) : error ? (
+                <Text style={styles.subtitleText}>Error: {error}</Text>
+            ) : hasSearched? (
+                <Text style={styles.subtitleText}>No recalls found</Text>
+            ) : (
+                <View/>
+            )}
+            
+
         </View>
     )
 }

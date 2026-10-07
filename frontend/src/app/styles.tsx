@@ -77,5 +77,47 @@ export const styles = StyleSheet.create({
         margin: 10,
         padding: 10,
         alignItems: 'center'
+    },
+    resultsCard: {
+        backgroundColor: '#4176c43b',
+        shadowColor: '#0c1524a8',
+        shadowOffset: {width: 4, height: 4},
+        shadowRadius: 2,
+        height: 400,
+        width: 300,
+        borderRadius: 10,
+        margin: 10,
+        padding: 20
+    },
+    resultsTitle: {
+        color: '#000',
+        fontSize: 18,
+        fontWeight: '700'
+    },
+    resultsDate: {
+        color: '#292929',
+        fontSize: 16,
+        fontWeight: '500',
+        marginTop: 5
+    },
+    resultsImage: {
+        height: 150,
+        width: 200,
+        marginTop: 20,
+        alignSelf: 'center'
+    },
+    resultsProductName: {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: '600',
+        marginTop: 10,
+        textAlign: 'center'
+    },
+    resultsHazard: {
+        color: '#2b0101',
+        fontSize: 16,
+        fontWeight: '500',
+        marginTop: 10,
+        textAlign: 'center'
     }
 })
