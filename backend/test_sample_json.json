@@ -1,0 +1,434 @@
+[
+  {
+    "RecallID": 11009,
+    "RecallNumber": "27010",
+    "RecallDate": "2026-10-01T00:00:00",
+    "Description": "This recall involves certain Walmart Expert Grill metal wire bristle grill brushes. The brushes have black plastic or stainless-steel handles. Some brushes come with metal scraper attached. The following model numbers are included in this recall and can be found on the product packaging or a sticker/tag attached to the brush: \n\n ",
+    "URL": "https://www.cpsc.gov/Recalls/2027/Walmart-Recalls-Over-4-4-Million-Expert-Grill-Brushes-Due-to-Ingestion-Hazard",
+    "Title": "Walmart Recalls Over 4.4 Million Expert Grill Brushes Due to Ingestion Hazard",
+    "ConsumerContact": "Walmart toll-free at 800-925-6278 from 7 a.m. to 9 p.m. CT Monday through Friday, or online at www.walmart.com/help or https://corporate.walmart.com/recalls or www.walmart.com and click on “Product Recalls” at the bottom of the page for more information.",
+    "LastPublishDate": "2026-10-01T00:00:00",
+    "Products": [
+      {
+        "Name": "Metal Wire Bristle Grill Brushes",
+        "Description": "",
+        "Model": "",
+        "Type": "Cleaning Equipment, Inc. Brooms, Mops, Brushes, Etc",
+        "CategoryID": "1241",
+        "NumberOfUnits": "About 4,477,655"
+      }
+    ],
+    "Inconjunctions": [],
+    "Images": [
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/walmart1.png?VersionId=v2hWan7AxanNYvrNuAsHDREJAL7nJ6aL",
+        "Caption": "Expert Grill 16-inch Steel Fiber Scrub Brush and Scraper for Grills"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/walmart2.png?VersionId=jXMQSbY6Wc0gOW8z_imUfGC1miIDKcFv",
+        "Caption": "Expert Grill Handheld Steel Fiber Scrub Brush with Ergonomic Handle for Grill Cleaning"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/walmart3.png?VersionId=VodJtG68QYh3UiMkhB6Xk41yEfSB._El",
+        "Caption": "Expert Grill 21” 3-head Grill Brush with Stainless Steel Bristles and Soft-Grip Handle"
+      }
+    ],
+    "Injuries": [
+      {
+        "Name": "None reported."
+      }
+    ],
+    "Manufacturers": [],
+    "Retailers": [
+      {
+        "Name": "Sold At:\nWalmart and online including Walmart.com from January 2021 through August 2026 for between $1 and $28.",
+        "CompanyID": ""
+      }
+    ],
+    "Importers": [
+      {
+        "Name": "Walmart, Inc. of Bentonville, Arkansas",
+        "CompanyID": ""
+      }
+    ],
+    "Distributors": [],
+    "SoldAtLabel": null,
+    "ManufacturerCountries": [
+      {
+        "Country": "China"
+      }
+    ],
+    "ProductUPCs": [],
+    "Hazards": [
+      {
+        "Name": "Small metal wire bristles can detach from the brushes and stick to the grill or food, posing an ingestion hazard and risk of serious internal injuries that could require surgery.",
+        "HazardType": "",
+        "HazardTypeID": ""
+      }
+    ],
+    "Remedies": [
+      {
+        "Name": "Consumers should stop using the recalled grill brushes immediately and contact Walmart for a full refund or a credit for use at any Walmart store or Walmart.com. Consumers will be asked to return their recalled brushes to Walmart or discard them."
+      }
+    ],
+    "RemedyOptions": [
+      {
+        "Option": "Refund"
+      }
+    ]
+  },
+  {
+    "RecallID": 10953,
+    "RecallNumber": "26717",
+    "RecallDate": "2026-08-27T00:00:00",
+    "Description": "This recall expansion involves Cuisinart metal wire bristle grill brushes. The brushes have black plastic, stainless steel, and wood handles. The following model numbers were previously recalled and can be found on the product packaging: CCB-100, CCB-4125, CCB-5014, CCB-6450, CCB-8012, CCB-4114, CCB-W2, and CSBS-777. The following model numbers are part of this recall expansion: CGWM-024, CGWM-059, FCB-501, CGS-W18, CCB-134, CGWM-061, CB-395, CCB-3001, CGWM-077, CGWM-058, CCB-012/021, CGWM-060, and FBH-51. \n\nIn addition to the identified models, additional Cuisinart brand wire bristle brushes were sold individually and in sets, prior to 2020. All Cuisinart wire bristle grill brushes are included in the recall.\n\nThe word “Cuisinart” is stamped on the brush handle of the identified models except FCB-501 and CCB-395, where the handle is not stamped. Some of the recalled brushes were also sold as part of the Premium Grill 10 Piece set (CGS-2010), 13 Piece Wooden Handle Grill Tool Set (CGS-W13), 14 Piece Deluxe Stainless Steel Grill Set (CGS-5014), and 20 Piece Deluxe Grill Set, (CGS-5020).\n\nThe model numbers listed below are part of this recall:",
+    "URL": "https://cpsc.gov/Recalls/2026/Conair-Expands-Recall-of-Cuisinart-Grill-Brushes-Due-to-Ingestion-Hazard-Over-3-6-Million-Brushes-Now-Recalled",
+    "Title": "Conair Expands Recall of Cuisinart Grill Brushes Due to Ingestion Hazard; Over 3.6 Million Brushes Now Recalled",
+    "ConsumerContact": "Conair toll-free at 888-520-1304 from 8:30 a.m. to 6 p.m. ET Monday through Friday, or online at https://www.recallrtr.com/grillbrushes or www.cuisinart.com and click on “Product Recalls” at the bottom of the page for more information.",
+    "LastPublishDate": "2026-08-27T00:00:00",
+    "Products": [
+      {
+        "Name": "Metal Wire Bristle Grill Brushes",
+        "Description": "",
+        "Model": "",
+        "Type": "Cleaning Equipment, Inc. Brooms, Mops, Brushes, Etc",
+        "CategoryID": "1241",
+        "NumberOfUnits": "About 1,905,805 additional brushes (Conair previously recalled 1,719,995 grill brushes in July 2026 for a total of 3,625,800)"
+      }
+    ],
+    "Inconjunctions": [],
+    "Images": [
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture13_9.png?VersionId=da_heQvQ2I2ngaVAm7vdpZroOmVJMJUR",
+        "Caption": "Triple Bristle Grill Cleaning Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture14_10.png?VersionId=2blZ5dx6Vz9bU5bxclkjKjd652W6FVtc",
+        "Caption": "4-in-1 Grill Cleaning Brush with Stainless Steel Wire Bristles"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture15_9.png?VersionId=bB9zl8d6Umjr0SjJaDs5z_uQTmpKN7sP",
+        "Caption": "BBQ Grill Cleaning Brush and Scraper, 16.5\" Stainless Steel"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture16_9.png?VersionId=6GkTVhzRXa96uo6Y_rhKxHsFgS2LVXHC",
+        "Caption": "Tripple Bristle Grill Brush SS Bristles"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture17_7.png?VersionId=CRL9QPyUdgXPe1HZXmfwwFGKdO3lLsl4",
+        "Caption": "2-In-1 Grill Brush Bristle/Coil"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture18_4.png?VersionId=yNp.Yo3li9BgDgWNRjtxTmXEzxJxDY.4",
+        "Caption": "Pizza Stone Cleaning Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture19_6.png?VersionId=DDd4i13zAEnWVBt5MLI.y63B_0hoKw4f",
+        "Caption": "Wood Grill Cleaning Brush (18.5\" with Pakka Wood Handle)\n"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture20_7.png?VersionId=K97gmvbjA.fznG0qndu8zSpMjtRC4X.c",
+        "Caption": "Steam Clean Grill Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture21_7.png?VersionId=A8X9Kcuhr4YxmWG.ZxnxMdQfbunmpiHw",
+        "Caption": "Dual Grip Grill Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture22_6.png?VersionId=c8dGV5eUhaXSYgLwFFwUVZFVL3PffoDk",
+        "Caption": "18\" Bamboo Cleaning Grill Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture23_5.png?VersionId=6ib9ofmcLFACU19MRnMXLBwbNhS3MR1M",
+        "Caption": "Grill Dozer Steam Cleaning Grill Cleaning Tool"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture24_5.png?VersionId=2gwcWm9sRbq_V8uLgf.D49D0TeGsA2yQ",
+        "Caption": "18-Piece Wooden Handle Grill Set"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture25_5.png?VersionId=LwZR.yWL_iwDRV1_N0gKaIAmBqqCQcbp",
+        "Caption": "Comfort Grill Cleaning Brush - (Colors: Black, Red, Green, Blue)"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture26_4.png?VersionId=03uZMJKjNo9Fl6NXMSkC5CUK77oNxPbj",
+        "Caption": "21\" Tri-Wire Grill Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture27_3.png?VersionId=SwP2wRGBMWuvu_a7dF1KOWRPMUl1SQcB",
+        "Caption": "Cross-Action Grill Cleaning Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture28_2.png?VersionId=mlSKlV_v8Evg5i.eUsQbgUnN5ObU_Z4j",
+        "Caption": "Triple Threat Grill Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture29_1.png?VersionId=twril3ZUyAVPZvH6MXfGQaX6yjKM.Zv5",
+        "Caption": "Steam Cleaner Grill Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture30_0.png?VersionId=xjKy4uuFEbPtnULqlmZ0BtHJtUQQnlfg",
+        "Caption": "3-Piece Multi-Use Grill Cleaning System"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture31_1.png?VersionId=20fL2yiI9ABl3OMryxJUTLpKEaGkDllt",
+        "Caption": "Tri-Wire 12”-Inch Grill Cleaning Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture32.png?VersionId=w7Ap2LpKV9CZ6_pUB54mLNP0shZCHHd9",
+        "Caption": "16” Wire Detailing Grill Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/Picture34_0.png?VersionId=ZbIbhHCZTwUr3o7QRwAtCL_8_1HANPNn",
+        "Caption": "Cleaning Brush Replacement"
+      }
+    ],
+    "Injuries": [
+      {
+        "Name": "Conair is aware of at least 54 reports and reviews where small wire bristles detached from the grill brushes, including three reports of consumers who swallowed metal bristles and sought medical treatment to remove the bristles from their digestive tract or throat."
+      }
+    ],
+    "Manufacturers": [],
+    "Retailers": [
+      {
+        "Name": "Sold At:\nWalmart, Burlington, TJ Maxx and Ross and online including Amazon and Cuisinart.com from June 2009 through March 2026 for between $8 and $20.",
+        "CompanyID": ""
+      }
+    ],
+    "Importers": [
+      {
+        "Name": "Conair LLC of Stamford, Connecticut",
+        "CompanyID": ""
+      }
+    ],
+    "Distributors": [],
+    "SoldAtLabel": null,
+    "ManufacturerCountries": [
+      {
+        "Country": "China"
+      }
+    ],
+    "ProductUPCs": [],
+    "Hazards": [
+      {
+        "Name": "Small metal wire bristles can detach from the brushes and stick to the grill or food, posing an ingestion hazard and risk of serious internal injuries that could require surgery.",
+        "HazardType": "",
+        "HazardTypeID": ""
+      }
+    ],
+    "Remedies": [
+      {
+        "Name": "Consumers should stop using the recalled grill brushes immediately and contact Conair for a full refund or a credit for use at Cuisinart.com for a full refund plus 20% of the cash refund amount. Consumers will be asked to discard the recalled grill brushes."
+      }
+    ],
+    "RemedyOptions": [
+      {
+        "Option": "Refund"
+      }
+    ]
+  },
+  {
+    "RecallID": 10850,
+    "RecallNumber": "26601",
+    "RecallDate": "2026-07-02T00:00:00",
+    "Description": "This recall involves Cuisinart metal wire bristle grill brushes. The brushes have black plastic, stainless steel, and wood handles. The following model numbers are included in this recall and can be found on the product packaging: CCB-100, CCB-4125, CCB-5014, CCB-6450, CCB-8012, CCB-4114, CCB-W2, and CSBS-777. The word \"Cuisinart\" is stamped on the brush handle. Some of the recalled brushes were also sold as part of the Premium Grill 10 Piece set (CGS-2010), 13 Piece Wooden Handle Grill Tool Set (CGS-W13), 14 Piece Deluxe Stainless Steel Grill Set (CGS-5014), and 20 Piece Deluxe Grill Set, (CGS-5020). Model No. Brush Description Distribution Dates CCB-100 Triple Bristle Grill Cleaning Brush January 2013-March 2026 CCB4125 4-in-1 Grill Cleaning Brush with Stainless Steel Wire Bristles October 2022-March 2026 CCB-5014 Triple Bristle Grill Brush SS Bristles January 2025-March 2026 CCB-6450 Triple Bristle Grill Brush SS Bristles January 2025-March 2026 CCB-8012 Pizza Stone Cleaning Brush 2024 CCB-W2 Wood Grill Cleaning Brush (18.5\" with Pakka Wood Handle) March 2024-July 2025 CSBS-777 Steam Clean Grill Brush March 2014-July 2025",
+    "URL": "https://www.cpsc.gov/Recalls/2026/Conair-Recalls-Over-One-Million-Cuisinart-Grill-Brushes-Due-to-Ingestion-Hazard",
+    "Title": "Conair Recalls Over One Million Cuisinart Grill Brushes Due to Ingestion Hazard",
+    "ConsumerContact": "Conair toll-free at 888-520-1304 from 8:30 a.m. to 6 p.m. ET Monday through Friday, or online at https://www.recallrtr.com/grillbrushes or www.cuisinart.com and click on \"Product Recalls\" at the bottom of the page for more information.",
+    "LastPublishDate": "2026-07-03T00:00:00",
+    "Products": [
+      {
+        "Name": "Metal Wire Bristle Grill Brushes",
+        "Description": "",
+        "Model": "",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": "About 1,719,995"
+      }
+    ],
+    "Inconjunctions": [],
+    "Images": [
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/triplebristle.png",
+        "Caption": "Triple Bristle Grill Cleaning Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/4-in-1.png",
+        "Caption": "4-in-1 Grill Cleaning Brush with Stainless Steel Wire Bristles"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/image_64.png",
+        "Caption": "BBQ Grill Cleaning Brush and Scraper, 16.5\" Stainless Steel"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/image_65.png",
+        "Caption": "Triple Bristle Grill Brush SS Bristles"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/2-in-1.png",
+        "Caption": "2-In-1 Grill Brush Bristle/Coil"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/image_66.png",
+        "Caption": "Pizza Stone Cleaning Brush"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/image_67.png",
+        "Caption": "Wood Grill Cleaning Brush (18.5\" with Pakka Wood Handle)"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/image_68.png",
+        "Caption": "Steam Clean Grill Brush"
+      }
+    ],
+    "Injuries": [
+      {
+        "Name": "Conair is aware of at least 54 reports and reviews where small wire bristles detached from the grill brushes, including three reports of consumers who swallowed metal bristles and sought medical treatment to remove the bristles from their digestive tract or throat."
+      }
+    ],
+    "Manufacturers": [],
+    "Retailers": [
+      {
+        "Name": "Burlington, TJ Maxx and Ross stores and online including Amazon.com and Cuisinart.com from June 2009 through March 2026 for between $8 and $20.",
+        "CompanyID": ""
+      }
+    ],
+    "Importers": [
+      {
+        "Name": "Conair LLC, of Stamford, Connecticut",
+        "CompanyID": ""
+      }
+    ],
+    "Distributors": [],
+    "SoldAtLabel": null,
+    "ManufacturerCountries": [
+      {
+        "Country": "China"
+      }
+    ],
+    "ProductUPCs": [],
+    "Hazards": [
+      {
+        "Name": "Small metal wire bristles can detach from the brushes and stick to the grill or food, posing an ingestion hazard and risk of serious internal injuries that could require surgery.",
+        "HazardType": "",
+        "HazardTypeID": ""
+      }
+    ],
+    "Remedies": [
+      {
+        "Name": "Consumers should stop using the recalled grill brushes immediately and contact Conair for a full refund or a credit for use at Cuisinart.com for a full refund plus 20% of the cash refund amount. Consumers will be asked to discard the recalled grill brushes."
+      }
+    ],
+    "RemedyOptions": [
+      {
+        "Option": "Refund"
+      }
+    ]
+  },
+  {
+    "RecallID": 10669,
+    "RecallNumber": "26339",
+    "RecallDate": "2026-03-26T00:00:00",
+    "Description": "This recall involves Nexgrill metal wire bristle grill brushes with black plastic or wood handles measuring between 18 and 21 inches long. The following model numbers are included in this recall and can be found on the product packaging: 530-0024, 530-0024G, 530-0034, 530-0039, 530-0041, 530-0042. Only the model numbers listed below are part of this recall. The word \"Nexgrill\" is included on each model. Model No. Brush Description Distribution Dates 530-0024 19-Inch Grill Brush 2015-2026 530-0024G Grill Cleaning Brush with Scraper 2022-2026 530-0034 Long Handle Grill Brush 2015-2026 530-0039 Grill Brush and Scraper 2015-2026 530-0041 Grill Brush with Scrub Pad 2015-2026 530-0042 Wood Handle Grill Brush 2015-2021",
+    "URL": "https://www.cpsc.gov/Recalls/2026/Nexgrill-Recalls-Over-10-2-Million-Metal-Wire-Bristle-Grill-Brushes-Due-to-Ingestion-Hazard-Sold-at-Home-Depot",
+    "Title": "Nexgrill Recalls Over 10.2 Million Metal Wire Bristle Grill Brushes Due to Ingestion Hazard; Sold at Home Depot",
+    "ConsumerContact": "Nexgrill toll-free at 800-942-1498 from 9 a.m. to 5 p.m. ET Monday through Friday or online at https://nexgrill.mktpoint.com/recall or www.nexgrill.com and click on \"Product Recalls\" for more information.",
+    "LastPublishDate": "2026-03-27T00:00:00",
+    "Products": [
+      {
+        "Name": "Metal Wire Bristle Grill Brushes",
+        "Description": "",
+        "Model": "",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": "About 10.2 million"
+      },
+      {
+        "Name": "Test Product Name",
+        "Description": "",
+        "Model": "",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": "About 42 million"
+      },
+      {
+        "Name": "Test Product Name 2",
+        "Description": "",
+        "Model": "",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": "About tree fiddy"
+      }
+    ],
+    "Inconjunctions": [],
+    "Images": [
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/nexgrill-1.jpg",
+        "Caption": "Recalled Nexgrill 19-Inch Grill Brush (Model Number 530-0024)"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/nexgrill-2.jpg",
+        "Caption": "Recalled Nexgrill Grill Brush with Scraper (Model Number 530-0024G)"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/nexgrill-3.jpg",
+        "Caption": "Recalled Nexgrill Long Handle Grill Brush (Model Number 530-0034)"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/nexgrill-4.jpg",
+        "Caption": "Recalled Nexgrill Grill Brush and Scraper (Model Number 530-0039)"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/nexgrill-5.jpg",
+        "Caption": "Recalled Nexgrill Grill Brush with Scrub Pad (Model Number 530-0041)"
+      },
+      {
+        "URL": "https://www.cpsc.gov/s3fs-public/nexgrill-6.jpg",
+        "Caption": "Recalled Nexgrill Wood Handle Grill Brush (Model Number 530-0042)"
+      }
+    ],
+    "Injuries": [
+      {
+        "Name": "Nexgrill is aware of at least 68 reports and reviews where small wire bristles detached from the grill brushes, including five reports of consumers who swallowed metal bristles and sought medical treatment to remove the bristles from their digestive tract or throat."
+      }
+    ],
+    "Manufacturers": [],
+    "Retailers": [
+      {
+        "Name": "The recalled grill brushes were sold in stores at Home Depot and online at homedepot.com from 2015 through 2026 for between about $5 and $15.",
+        "CompanyID": ""
+      }
+    ],
+    "Importers": [
+      {
+        "Name": "Nexgrill Industries, Inc. of Chino, California",
+        "CompanyID": ""
+      }
+    ],
+    "Distributors": [],
+    "SoldAtLabel": null,
+    "ManufacturerCountries": [
+      {
+        "Country": "China"
+      }
+    ],
+    "ProductUPCs": [],
+    "Hazards": [
+      {
+        "Name": "Small metal wire bristles can detach from the brushes and stick to the grill or food, posing an ingestion hazard and risk of serious internal injuries that could require surgery.",
+        "HazardType": "",
+        "HazardTypeID": ""
+      }
+    ],
+    "Remedies": [
+      {
+        "Name": "Consumers should immediately stop using the recalled grill brushes and contact Nexgrill for a full refund to be issued as a gift card. Consumers will be provided with a registration code as part of the recall process and will be directed to upload a photograph of their grill brush with that code and their initials to the recall website to register for the recall. After receiving a confirmation email that their registration has been successfully processed, consumers will then receive directions on how to discard of the recalled grill brush."
+      }
+    ],
+    "RemedyOptions": [
+      {
+        "Option": "Refund"
+      }
+    ]
+  }
+]
