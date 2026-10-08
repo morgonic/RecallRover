@@ -274,7 +274,7 @@ export default function SearchScreen() {
             ) : error ? (
                 <Text style={styles.subtitleText}>Error: {error}</Text>
             ) : saveError ? (
-                <Text style={styles.subtitleText}>Error: {error}</Text>
+                <Text style={styles.subtitleText}>Error: {saveError}</Text>
             ) : hasSearched? (
                 <>
                 <Text style={styles.subtitleText}>No recalls found</Text>
