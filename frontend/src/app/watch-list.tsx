@@ -180,6 +180,11 @@ export default function WatchListScreen() {
 
             {(checkingAuth && !loggedIn) ? (
                 <ActivityIndicator size='large'/>
+            ) : (watchedProducts.length == 0) ? (
+                <>
+                <Text style={styles.subtitleText}>You are not watching watching any products.</Text>
+                <Text style={styles.smallSubtitleText}>To watch a product, search for recalls on the Search page and press the Watch Product button when no recalls are found.</Text>
+                </>
             ) : (
                 <FlatList
                     data={watchedProducts}

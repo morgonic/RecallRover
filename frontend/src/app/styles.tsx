@@ -21,6 +21,12 @@ export const styles = StyleSheet.create({
         fontWeight: '600',
         margin: 20,
     },
+    smallSubtitleText: {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: '600',
+        margin: 20,
+    },
     textinput: {
         height: 50,
         width: 300,
