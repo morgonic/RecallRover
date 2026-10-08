@@ -186,14 +186,14 @@ export default function SearchScreen() {
                     placeholderTextColor={'grey'}
                 />
                 <TextInput 
-                    style={[styles.textinput, {width: 240}]}
+                    style={[styles.textinput, {width: 220}]}
                     onChangeText={setProductBrand}
                     value={productBrand}
                     placeholder='Brand'
                     placeholderTextColor={'grey'}
                 />
                 <TextInput 
-                    style={[styles.textinput, {width: 240}]}
+                    style={[styles.textinput, {width: 220}]}
                     onChangeText={setProductModel}
                     value={productModel}
                     placeholder='Model Number'
