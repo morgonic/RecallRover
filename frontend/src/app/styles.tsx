@@ -119,5 +119,34 @@ export const styles = StyleSheet.create({
         fontWeight: '500',
         marginTop: 10,
         textAlign: 'center'
+    },
+    modal: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 2,
+            height: 4
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        margin: 20,
+        padding: 20
+    },
+    watchedProductButton: {
+        backgroundColor: '#4176c4',
+        height: 50,
+        width: 200,
+        borderRadius: 10
+    },
+    wpButtonText: {
+        fontSize: 20,
+        color: '#fff',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        margin: 10
     }
 })

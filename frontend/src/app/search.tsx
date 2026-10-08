@@ -1,12 +1,13 @@
 // Search screen
 
-import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator } from 'react-native';
+import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal } from 'react-native';
 import { styles } from './styles';
 import { Link, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken } from "./storage";
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RecallSummary } from '../../types/recall';
+import { WatchedProductModal } from '../../components/WatchedProductModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -29,6 +30,8 @@ export default function SearchScreen() {
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
     const [hasSearched, setHasSearched] = useState(false)
+
+    const [watchedProductModalVisible, setWatchedProductModalVisible] = useState(false)
 
     const searchDisabled = (
         (productName == '') && (productBrand == '') && (productModel == '') ||
@@ -76,6 +79,10 @@ export default function SearchScreen() {
         finally {
             setLoading(false)
         }
+    }
+
+    async function onSaveWatchedProduct() {
+
     }
 
     // checking if logged in to swap Log In / Log Out button
@@ -227,7 +234,27 @@ export default function SearchScreen() {
             ) : error ? (
                 <Text style={styles.subtitleText}>Error: {error}</Text>
             ) : hasSearched? (
+                <>
                 <Text style={styles.subtitleText}>No recalls found</Text>
+                <Pressable
+                    onPress={() => setWatchedProductModalVisible(true)}
+                    style={styles.watchedProductButton}
+                >
+                    <Text style={styles.wpButtonText}>Watch Product</Text>
+                </Pressable>
+                <Modal
+                    visible={watchedProductModalVisible}
+                >
+                    <WatchedProductModal
+                        onSaveWatchedProduct={onSaveWatchedProduct}
+                        setWatchedProductModalVisible={setWatchedProductModalVisible}
+                        productName={productName}
+                        productBrand={productBrand}
+                        productModel={productModel}
+                        productUPC=''
+                    />
+                </Modal>
+                </>
             ) : (
                 <View/>
             )}
