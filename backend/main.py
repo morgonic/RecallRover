@@ -2,9 +2,13 @@
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from database import create_db_and_tables, User
+from database import create_db_and_tables, User, get_async_session, WatchedProduct
 from contextlib import asynccontextmanager
-from schemas import UserRead, UserCreate, UserUpdate, RecallDetails, RecallSummary
+from schemas import (
+    UserRead, UserCreate, UserUpdate, 
+    RecallDetails, RecallSummary, 
+    WatchedProductRead, WatchedProductCreate
+)
 from users import auth_backend, current_active_user, fastapi_users
 from cpsc_client import search_recalls
 from recall_helpers import build_recall_summary
@@ -137,3 +141,31 @@ async def search_cpsc_recalls(
         summaries.append(summary)
     # return list of summaries
     return summaries
+
+
+## Watched Products routes ##
+
+# save watched product endpoint
+@app.post('/watched-products', response_model=WatchedProductRead, tags=['watched-products'])
+async def save_watched_product(
+    data: WatchedProductCreate,
+    user: User = Depends (current_active_user),
+    session: AsyncSession = Depends(get_async_session)
+):
+    if (
+        (data.product_name == '') &
+        (data.product_brand == '') &
+        (data.product_model == '') &
+        (data.product_upc == '')
+    ):
+        logger.warning('Cannot save product with no data.')
+        raise HTTPException(status_code=400, detail='Needs at least one data field.')
+    
+    product = WatchedProduct(**data.model_dump(), user_id=str(user.id))
+    session.add(product)
+    await session.commit()
+    await session.refresh(product)
+
+    logger.info(f'Watched product {product.id} was saved to the database.')
+
+    return product

@@ -59,6 +59,19 @@ class DailyCheckLog(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     last_check_date: Mapped[str | None] = mapped_column(String(30))
 
+### Watched Product models ###
+
+class WatchedProduct(Base):
+    __tablename__ = 'watched_products'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey('user.id'))
+    status_label: Mapped[str] = mapped_column(String(), default='Watching')
+    product_name: Mapped[str | None] = mapped_column(String())
+    product_brand: Mapped[str | None] = mapped_column(String())
+    product_model: Mapped[str | None] = mapped_column(String())
+    product_upc: Mapped[str | None] = mapped_column(String())
+
 # SQLite db file name and url
 sqlite_file_name = "recallrover.db"
 SQLITE_URL = f"sqlite+aiosqlite:///./{sqlite_file_name}"

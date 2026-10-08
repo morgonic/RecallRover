@@ -60,3 +60,21 @@ class RecallSummary(BaseModel):
     Image: str | None = None
     ProductName: str | None = None
     Hazard: str | None = None
+
+### Watched Product schemas ###
+
+# schema for creating watched product in frontend request body
+class WatchedProductCreate(BaseModel):
+    product_name: str | None = None
+    product_brand: str | None = None
+    product_model: str | None = None
+    product_upc: str | None = None
+
+# schema for reading watched product data from backend
+class WatchedProductRead(BaseModel):
+    id: int
+    status_label: str
+    product_name: str | None = None
+    product_brand: str | None = None
+    product_model: str | None = None
+    product_upc: str | None = None
