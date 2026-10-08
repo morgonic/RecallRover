@@ -20,12 +20,15 @@ export function NavBar(props: NavBarProps) {
             <Link href="/search" style={styles.navButton}>
                 Search
             </Link>
+            <Text style={styles.navButtonDivider}> | </Text>
             <Link href="/" style={styles.navButton}>
                 Recall Feed
             </Link>
+            <Text style={styles.navButtonDivider}> | </Text>
             <Link href="/watch-list" style={styles.navButton}>
                 Watch List
             </Link>
+            <Text style={styles.navButtonDivider}> | </Text>
             {props.loggedIn ? (
                 <Pressable
                     onPress={onLogOut}
