@@ -74,7 +74,7 @@ export default function LoginScreen() {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={styles.authContainer}>
             <Text style={styles.title}>RecallRover</Text>
                 <View style={{alignItems: 'flex-start', marginLeft: 30}}>
                 <TextInput 

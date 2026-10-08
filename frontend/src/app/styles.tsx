@@ -10,6 +10,12 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 50
     },
+    authContainer: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     title: {
         color: '#000',
         fontSize: 28,

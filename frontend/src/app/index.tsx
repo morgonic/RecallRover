@@ -3,6 +3,7 @@ import { Link, router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { deleteToken, getGuest, getToken } from "./storage";
 import { styles } from './styles';
+import { NavBar } from "../../components/NavBar";
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -65,32 +66,9 @@ export default function Index() {
         <ActivityIndicator size='large' />
       ) : (
         <>
-          <View style={styles.navigationBar}>
-            <Link href="/search" style={styles.navButton}>
-              Search
-            </Link>
-            <Link href="/" style={styles.navButton}>
-              Recall Feed
-            </Link>
-            <Link href="/watch-list" style={styles.navButton}>
-              Watch List
-            </Link>
-            {loggedIn ? (
-                <Pressable
-                    onPress={onLogOut}
-                >
-                    <Text style={styles.navButton}>
-                        Log Out
-                    </Text>
-                </Pressable>
-            ) : (
-                <Link href="/login" style={styles.navButton}>
-                    Log In
-                </Link>
-            )}
-          </View>
-
-          <Text style={{marginTop: 20}}>View recalls here.</Text>
+        <NavBar loggedIn={loggedIn} />
+        <Text style={styles.title}>Recall Feed</Text>
+        <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
         </>
       )}
       

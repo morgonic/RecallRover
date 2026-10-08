@@ -153,7 +153,7 @@ export default function CreateAccountScreen() {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={styles.authContainer}>
             <Text style={styles.title}>RecallRover</Text>
             <Text style={styles.subtitleText}>Create an account to start watching products and receive alerts!</Text>
                 <View style={{alignItems: 'flex-start', marginLeft: 30}}>

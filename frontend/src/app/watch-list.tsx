@@ -8,6 +8,7 @@ import { deleteToken, getGuest, getToken, setGuest } from './storage';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
 import { WatchedProductInput, WatchedProductRead } from '../../types/watched-products';
 import { WatchedProductModal } from '../../components/WatchedProductModal';
+import { NavBar } from '../../components/NavBar';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -166,30 +167,7 @@ export default function WatchListScreen() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.navigationBar}>
-                <Link href="/search" style={styles.navButton}>
-                    Search
-                </Link>
-                <Link href="/" style={styles.navButton}>
-                    Recall Feed
-                </Link>
-                <Link href="/watch-list" style={styles.navButton}>
-                    Watch List
-                </Link>
-                {loggedIn ? (
-                    <Pressable
-                        onPress={onLogOut}
-                    >
-                        <Text style={styles.navButton}>
-                            Log Out
-                        </Text>
-                    </Pressable>
-                ) : (
-                    <Link href="/login" style={styles.navButton}>
-                        Log In
-                    </Link>
-                )}
-            </View>
+            <NavBar loggedIn={loggedIn}/>
             <Text style={styles.title}>Watch List</Text>
             <View style={{height: 14}}/>
             <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
