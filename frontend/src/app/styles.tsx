@@ -81,7 +81,8 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         color: '#000',
         marginTop: 20,
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        marginVertical: 30
     },
     navigationBar: {
         flexDirection: 'row'
