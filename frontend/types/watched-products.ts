@@ -8,6 +8,7 @@ export type WatchedProductInput = {
 }
 
 export type WatchedProductRead = {
+    id: number
     status_label: string
     product_name: string | null
     product_brand: string | null
