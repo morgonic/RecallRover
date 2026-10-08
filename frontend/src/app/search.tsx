@@ -8,6 +8,8 @@ import { deleteToken, getGuest, getToken } from "./storage";
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RecallSummary } from '../../types/recall';
 import { WatchedProductModal } from '../../components/WatchedProductModal';
+import { WatchedProductInput } from '../../types/watched-products';
+import { SaveConfirmationModal } from '../../components/SaveConfirmationModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -29,9 +31,12 @@ export default function SearchScreen() {
     const [results, setResults] = useState<RecallSummary[]>([])
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    const [saving, setSaving] = useState(false)
+    const [saveError, setSaveError] = useState<string | null>(null)
     const [hasSearched, setHasSearched] = useState(false)
 
     const [watchedProductModalVisible, setWatchedProductModalVisible] = useState(false)
+    const [saveConfirmationVisible, setSaveConfirmationVisible] = useState(false)
 
     const searchDisabled = (
         (productName == '') && (productBrand == '') && (productModel == '') ||
@@ -81,8 +86,43 @@ export default function SearchScreen() {
         }
     }
 
-    async function onSaveWatchedProduct() {
+    async function onSaveWatchedProduct(product: WatchedProductInput) {
+        setSaving(true)
+        setSaveError(null)
+        const token = await getToken()
+        if (!token) {
+            setSaveError('Please log in to watch products.')
+            setSaving(false)
+            setWatchedProductModalVisible(false)
+            return
+        }
+        try {
+            const response = await fetch(`${API_URL}/watched-products`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(product)
+            })
 
+            const json = await response.json()
+
+            if (!response.ok) {
+                setSaveError((json.detail).toString())
+            }
+            else {
+                setWatchedProductModalVisible(false)
+                setSaveConfirmationVisible(true)
+            }
+        }
+        catch (e: any) {
+            console.error(e.message)
+            setSaveError(e.message)
+        }
+        finally {
+            setSaving(false)
+        }
     }
 
     // checking if logged in to swap Log In / Log Out button
@@ -229,9 +269,11 @@ export default function SearchScreen() {
                         </View>
                     )}
                 />
-            ) : loading ? (
+            ) : (loading || saving) ? (
                 <ActivityIndicator size='large'/>
             ) : error ? (
+                <Text style={styles.subtitleText}>Error: {error}</Text>
+            ) : saveError ? (
                 <Text style={styles.subtitleText}>Error: {error}</Text>
             ) : hasSearched? (
                 <>
@@ -242,24 +284,30 @@ export default function SearchScreen() {
                 >
                     <Text style={styles.wpButtonText}>Watch Product</Text>
                 </Pressable>
-                <Modal
-                    visible={watchedProductModalVisible}
-                >
-                    <WatchedProductModal
-                        onSaveWatchedProduct={onSaveWatchedProduct}
-                        setWatchedProductModalVisible={setWatchedProductModalVisible}
-                        productName={productName}
-                        productBrand={productBrand}
-                        productModel={productModel}
-                        productUPC=''
-                    />
-                </Modal>
                 </>
             ) : (
                 <View/>
             )}
-            
-
+            <Modal
+                visible={watchedProductModalVisible}
+            >
+                <WatchedProductModal
+                    onSaveWatchedProduct={onSaveWatchedProduct}
+                    setWatchedProductModalVisible={setWatchedProductModalVisible}
+                    disabled={saving}
+                    productName={productName}
+                    productBrand={productBrand}
+                    productModel={productModel}
+                    productUPC=''
+                />
+            </Modal>
+            <Modal
+                visible={saveConfirmationVisible}
+            >
+                <SaveConfirmationModal
+                    setSaveConfirmationVisible={setSaveConfirmationVisible}
+                />
+            </Modal>
         </View>
     )
 }
