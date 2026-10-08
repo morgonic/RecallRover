@@ -148,5 +148,17 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         textAlignVertical: 'center',
         margin: 10
+    },
+    statusLabel: {
+        padding: 10,
+        borderRadius: 20,
+        borderWidth: 2
+    },
+    statusLabelText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#000',
+        textAlign: 'center',
+        textAlignVertical: 'center'
     }
 })
