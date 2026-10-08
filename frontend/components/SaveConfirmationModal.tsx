@@ -1,4 +1,4 @@
-import { Pressable, View, Text, TextInput, } from 'react-native';
+import { Pressable, View, Text, } from 'react-native';
 import { styles } from '../src/app/styles';
 
 interface SaveConfirmationModalProps {

@@ -6,3 +6,11 @@ export type WatchedProductInput = {
     product_model: string
     product_upc: string
 }
+
+export type WatchedProductRead = {
+    status_label: string
+    product_name: string | null
+    product_brand: string | null
+    product_model: string | null
+    product_upc: string | null
+}
