@@ -1,6 +1,6 @@
 // Watch List screen
 
-import { Text, View, StyleSheet, Modal, ActivityIndicator, FlatList } from 'react-native';
+import { Text, View, StyleSheet, Modal, ActivityIndicator, FlatList, Pressable } from 'react-native';
 import { styles } from './styles';
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -124,7 +124,9 @@ export default function WatchListScreen() {
                     numColumns={3}
                     keyExtractor={(product) => String(product.id)}
                     renderItem={({ item }) => (
-                        <View style={styles.resultsCard}>
+                        <View style={[styles.resultsCard, {
+                            alignItems: 'center'
+                        }]}>
                             <View style={{alignSelf: 'flex-end'}}>
                                 <View style={[styles.statusLabel, {
                                     borderColor: statusLabelColor[item.status_label],
@@ -135,22 +137,46 @@ export default function WatchListScreen() {
                                     </Text>
                                 </View>
                             </View>
-                            <Text
-                                style={styles.resultsProductName}
-                            >
-                                {item.product_name}
-                            </Text>
+                            <View style={{alignItems: 'flex-start'}}>
+                                <Text
+                                    style={styles.watchedProductName}
+                                >
+                                    {item.product_name}
+                                </Text>
 
-                            <Text
-                                style={styles.resultsProductName}
-                            >
-                                {item.product_brand}
-                            </Text>
-                            <Text
-                                style={styles.resultsProductName}
-                            >
-                                {item.product_model}
-                            </Text>
+                                <Text
+                                    style={styles.watchedBrandModel}
+                                >
+                                    {item.product_brand}
+                                </Text>
+                                <Text
+                                    style={styles.watchedBrandModel}
+                                >
+                                    {item.product_model}
+                                </Text>
+                            </View>
+                            <View style={{
+                                flexDirection: 'row', 
+                                flex: 1,
+                                alignItems: 'flex-end'
+                            }}>
+                                <Pressable
+                                    style={styles.removeButton}
+                                    onPress={() => {}}
+                                >
+                                    <Text style={styles.buttonText}>
+                                        Remove
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={styles.editButton}
+                                    onPress={() => {}}
+                                >
+                                    <Text style={styles.buttonText}>
+                                        Edit
+                                    </Text>
+                                </Pressable>
+                            </View>
                         </View>
                     )} 
                 />

@@ -160,5 +160,39 @@ export const styles = StyleSheet.create({
         color: '#000',
         textAlign: 'center',
         textAlignVertical: 'center'
+    },
+    watchedProductName: {
+        color: '#000',
+        fontSize: 22,
+        fontWeight: '600',
+        marginTop: 10,
+        textAlign: 'center'
+    },
+    watchedBrandModel: {
+        color: '#000',
+        fontSize: 18,
+        fontWeight: '600',
+        marginTop: 10,
+        textAlign: 'center'
+    },
+    removeButton: {
+        backgroundColor: "#c44141",
+        flex: 1,
+        justifyContent: 'center',
+        height: 40,
+        width: 100,
+        borderRadius: 10,
+        margin: 10,
+        padding: 10
+    },
+    editButton: {
+        backgroundColor: "#69707c",
+        flex: 1,
+        justifyContent: 'center',
+        height: 40,
+        width: 100,
+        borderRadius: 10,
+        margin: 10,
+        padding: 10
     }
 })
