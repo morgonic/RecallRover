@@ -11,6 +11,7 @@ import { WatchedProductModal } from '../../components/WatchedProductModal';
 import { WatchedProductInput } from '../../types/watched-products';
 import { SaveConfirmationModal } from '../../components/SaveConfirmationModal';
 import { NavBar } from '../../components/NavBar';
+import { GuestAuthModal } from '../../components/GuestAuthModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -38,6 +39,7 @@ export default function SearchScreen() {
 
     const [watchedProductModalVisible, setWatchedProductModalVisible] = useState(false)
     const [saveConfirmationVisible, setSaveConfirmationVisible] = useState(false)
+    const [guestAuthModalVisible, setGuestAuthModalVisible] = useState(false)
 
     const searchDisabled = (
         (productName == '') && (productBrand == '') && (productModel == '') ||
@@ -95,6 +97,8 @@ export default function SearchScreen() {
             setSaveError('Please log in to watch products.')
             setSaving(false)
             setWatchedProductModalVisible(false)
+            setGuestAuthModalVisible(true)
+            console.log('Guest cannot watch products.')
             return
         }
         try {
@@ -215,7 +219,9 @@ export default function SearchScreen() {
 
             <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
 
-            {(!loading && (results.length > 0)) ? (
+            {checkingAuth? (
+                <ActivityIndicator size='large'/>
+            ) : (!loading && (results.length > 0)) ? (
                 <FlatList
                     data={results}
                     numColumns={3}
@@ -291,12 +297,20 @@ export default function SearchScreen() {
                     productUPC=''
                 />
             </Modal>
+
             <Modal
                 visible={saveConfirmationVisible}
             >
                 <SaveConfirmationModal
                     setSaveConfirmationVisible={setSaveConfirmationVisible}
                 />
+            </Modal>
+
+            <Modal
+                visible={guestAuthModalVisible}
+            >
+                <GuestAuthModal
+                    setGuestAuthModalVisible={setGuestAuthModalVisible} />
             </Modal>
         </View>
     )
