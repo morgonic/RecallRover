@@ -68,6 +68,7 @@ export default function Index() {
         <>
         <NavBar loggedIn={loggedIn} />
         <Text style={styles.title}>Recall Feed</Text>
+        <View style={{height: 14}}/>
         <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
         </>
       )}
