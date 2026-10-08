@@ -4,6 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from database import create_db_and_tables, User, get_async_session, WatchedProduct
 from contextlib import asynccontextmanager
+from sqlalchemy import select
 from schemas import (
     UserRead, UserCreate, UserUpdate, 
     RecallDetails, RecallSummary, 
@@ -169,3 +170,16 @@ async def save_watched_product(
     logger.info(f'Watched product {product.id} was saved to the database.')
 
     return product
+
+# get watched products endpoint for displaying in watch list
+@app.get('/watched-products', response_model=list[WatchedProductRead], tags=['watched-products'])
+async def get_watched_products(
+    user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_async_session)
+):
+    sql_statement = select(WatchedProduct).where(WatchedProduct.user_id == str(user.id))
+
+    watched_products = await session.execute(sql_statement)
+    watched_products = watched_products.scalars().all()
+
+    return watched_products
