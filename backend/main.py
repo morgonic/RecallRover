@@ -201,3 +201,32 @@ async def remove_watched_product(
 
     await session.delete(watched_product)
     await session.commit()
+
+    logger.info(f'Watched product {product_id} was removed from the database.')
+
+@app.patch('/watched-products/{product_id}', response_model=WatchedProductRead, tags=['watched-products'])
+async def edit_watched_product(
+    product_id: int,
+    data: WatchedProductCreate,
+    user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_async_session)
+):
+    sql_statement = select(WatchedProduct).where(and_(
+        WatchedProduct.user_id == str(user.id),
+        WatchedProduct.id == product_id
+    ))
+
+    watched_product = await session.execute(sql_statement)
+    watched_product = watched_product.scalars().first()
+
+    edits = data.model_dump(exclude_unset=True)
+
+    for key, val in edits.items():
+        setattr(watched_product, key, val)
+
+    await session.commit()
+    await session.refresh(watched_product)
+
+    logger.info(f'Watched product {product_id} updated in the database.')
+
+    return watched_product

@@ -6,7 +6,8 @@ import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken, setGuest } from './storage';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
-import { WatchedProductRead } from '../../types/watched-products';
+import { WatchedProductInput, WatchedProductRead } from '../../types/watched-products';
+import { WatchedProductModal } from '../../components/WatchedProductModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -19,8 +20,10 @@ export default function WatchListScreen() {
     const [error, setError] = useState<string | null>(null)
 
     const [guestAuthModalVisible, setGuestAuthModalVisible] = useState(false)
+    const [watchedProductModalVisible, setWatchedProductModalVisible] = useState(false)
 
     const [watchedProducts, setWatchedProducts] = useState<WatchedProductRead[]>([])
+    const [productEditing, setProductEditing] = useState<WatchedProductRead>()
 
     const statusLabelColor: Record<string, string> = {
         'Watching': '#09861e',
@@ -75,6 +78,36 @@ export default function WatchListScreen() {
         else {
             setLoggedIn(false)
             setGuestAuthModalVisible(true)
+        }
+    }
+
+    async function editWatchedProduct(product_id: number, edits: WatchedProductInput) {
+        const authToken = await getToken()
+        if (authToken) {
+            try {
+                const response = await fetch(`${API_URL}/watched-products/${product_id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(edits)
+                })
+
+                const json = await response.json()
+
+                if (!response.ok) {
+                    setError((json.detail).toString())
+                }
+                else {
+                    getWatchedProducts((authToken)!.toString())
+                    setWatchedProductModalVisible(false)
+                }
+            }
+            catch (e: any) {
+                console.error(e.message)
+                setError(e.message)
+            }
         }
     }
 
@@ -199,7 +232,10 @@ export default function WatchListScreen() {
                                 </Pressable>
                                 <Pressable
                                     style={styles.editButton}
-                                    onPress={() => {}}
+                                    onPress={() => {
+                                        setProductEditing(item)
+                                        setWatchedProductModalVisible(true)
+                                    }}
                                 >
                                     <Text style={styles.buttonText}>
                                         Edit
@@ -217,6 +253,22 @@ export default function WatchListScreen() {
                 <GuestAuthModal
                     setGuestAuthModalVisible={setGuestAuthModalVisible} />
             </Modal>
+
+            {productEditing && (
+            <Modal
+                visible={watchedProductModalVisible}
+            >
+                <WatchedProductModal
+                    onSaveWatchedProduct={(edits) => editWatchedProduct(productEditing.id, edits)}
+                    setWatchedProductModalVisible={setWatchedProductModalVisible}
+                    disabled={false}
+                    productName={productEditing.product_name ?? ''}
+                    productBrand={productEditing.product_brand ?? ''}
+                    productModel={productEditing.product_model ?? ''}
+                    productUPC=''
+                />
+            </Modal>
+            )}
 
         </View>
     )
