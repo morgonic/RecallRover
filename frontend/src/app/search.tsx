@@ -210,7 +210,9 @@ export default function SearchScreen() {
                     <Ionicons name='search' size={40} color='white'/>
                 </Pressable>
                 <Pressable
-                    style={styles.searchButton}
+                    style={({pressed}) =>
+                        [styles.searchButton,
+                        {backgroundColor: pressed ? '#25426e' : '#4175c4'}]}
                     onPress={() => {}}
                 >
                     <Ionicons name='barcode-outline' size={40} color='white'/>
