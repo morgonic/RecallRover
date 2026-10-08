@@ -183,3 +183,20 @@ async def get_watched_products(
     watched_products = watched_products.scalars().all()
 
     return watched_products
+
+# delete watched product endpoint to remove specific item from watch list
+@app.delete('/watched-products/{id}', tags=['watched-products'])
+async def remove_watched_product(
+    user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_async_session)
+):
+    sql_statement = select(WatchedProduct).where(
+        WatchedProduct.user_id == str(user.id) AND 
+        WatchedProduct.id == watched_products.id
+    )
+
+    watched_product = await session.execute(sql_statement)
+    watched_product = watched_product.scalars().first()
+
+    await session.delete(watched_product)
+    await session.commit()
