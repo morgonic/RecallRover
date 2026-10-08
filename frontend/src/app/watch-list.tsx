@@ -49,6 +49,35 @@ export default function WatchListScreen() {
         }
     }
 
+    async function removeWatchedProduct(product_id: number) {
+        const authToken = await getToken()
+        if (authToken) {
+            try {
+                const response = await fetch(`${API_URL}/watched-products/${product_id}`, {
+                    method: 'DELETE',
+                    headers: {'Authorization': `Bearer ${authToken}`}
+                })
+
+                const json = await response.json()
+
+                if (!response.ok) {
+                    setError((json.detail).toString())
+                }
+                else {
+                    getWatchedProducts((authToken)!.toString())
+                }
+            }
+            catch (e: any) {
+                console.error(e.message)
+                setError(e.message)
+            }
+        }
+        else {
+            setLoggedIn(false)
+            setGuestAuthModalVisible(true)
+        }
+    }
+
     useEffect(() => {
         const checkAuth = async () => {
             const token = await getToken();
@@ -162,7 +191,7 @@ export default function WatchListScreen() {
                             }}>
                                 <Pressable
                                     style={styles.removeButton}
-                                    onPress={() => {}}
+                                    onPress={() => removeWatchedProduct(item.id)}
                                 >
                                     <Text style={styles.buttonText}>
                                         Remove

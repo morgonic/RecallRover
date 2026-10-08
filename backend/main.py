@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from database import create_db_and_tables, User, get_async_session, WatchedProduct
 from contextlib import asynccontextmanager
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from schemas import (
     UserRead, UserCreate, UserUpdate, 
     RecallDetails, RecallSummary, 
@@ -185,15 +185,16 @@ async def get_watched_products(
     return watched_products
 
 # delete watched product endpoint to remove specific item from watch list
-@app.delete('/watched-products/{id}', tags=['watched-products'])
+@app.delete('/watched-products/{product_id}', tags=['watched-products'])
 async def remove_watched_product(
+    product_id: int,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session)
 ):
-    sql_statement = select(WatchedProduct).where(
-        WatchedProduct.user_id == str(user.id) AND 
-        WatchedProduct.id == watched_products.id
-    )
+    sql_statement = select(WatchedProduct).where(and_(
+        WatchedProduct.user_id == str(user.id),
+        WatchedProduct.id == product_id
+    ))
 
     watched_product = await session.execute(sql_statement)
     watched_product = watched_product.scalars().first()
