@@ -2,7 +2,7 @@
 
 import { Text, View, StyleSheet, Modal, ActivityIndicator, FlatList, Pressable } from 'react-native';
 import { styles } from './styles';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken, setGuest } from './storage';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
@@ -29,6 +29,12 @@ export default function WatchListScreen() {
         'Watching': '#09861e',
         'Recalled': '#860909',
         'Possible Recall': '#867e09'
+    }
+
+    async function onLogOut() {
+        await deleteToken();
+        setLoggedIn(false);
+        router.replace('/login');
     }
 
     async function getWatchedProducts(authToken: string) {
@@ -170,9 +176,19 @@ export default function WatchListScreen() {
                 <Link href="/watch-list" style={styles.navButton}>
                     Watch List
                 </Link>
-                <Link href="/login" style={styles.navButton}>
-                    Log In
-                </Link>
+                {loggedIn ? (
+                    <Pressable
+                        onPress={onLogOut}
+                    >
+                        <Text style={styles.navButton}>
+                            Log Out
+                        </Text>
+                    </Pressable>
+                ) : (
+                    <Link href="/login" style={styles.navButton}>
+                        Log In
+                    </Link>
+                )}
             </View>
             <Text style={styles.title}>Watch List</Text>
             <View style={{height: 14}}/>
@@ -182,7 +198,7 @@ export default function WatchListScreen() {
                 <ActivityIndicator size='large'/>
             ) : (watchedProducts.length == 0) ? (
                 <>
-                <Text style={styles.subtitleText}>You are not watching watching any products.</Text>
+                <Text style={styles.subtitleText}>You are not watching any products.</Text>
                 <Text style={styles.smallSubtitleText}>To watch a product, search for recalls on the Search page and press the Watch Product button when no recalls are found.</Text>
                 </>
             ) : (

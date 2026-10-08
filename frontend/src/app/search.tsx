@@ -125,6 +125,12 @@ export default function SearchScreen() {
         }
     }
 
+    async function onLogOut() {
+        await deleteToken();
+        setLoggedIn(false);
+        router.replace('/login');
+    }
+
     // checking if logged in to swap Log In / Log Out button
     useEffect(() => {
         const checkAuth = async () => {
@@ -179,9 +185,19 @@ export default function SearchScreen() {
                 <Link href="/watch-list" style={styles.navButton}>
                     Watch List
                 </Link>
-                <Link href="/login" style={styles.navButton}>
-                    Log In
-                </Link>
+                {loggedIn ? (
+                    <Pressable
+                        onPress={onLogOut}
+                    >
+                        <Text style={styles.navButton}>
+                            Log Out
+                        </Text>
+                    </Pressable>
+                ) : (
+                    <Link href="/login" style={styles.navButton}>
+                        Log In
+                    </Link>
+                )}
             </View>
             <Text style={styles.title}>Search Recalls</Text>
             <View style={{height: 14}}/>

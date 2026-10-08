@@ -1,4 +1,4 @@
-import { Text, View, ActivityIndicator } from "react-native";
+import { Text, View, ActivityIndicator, Pressable } from "react-native";
 import { Link, router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { deleteToken, getGuest, getToken } from "./storage";
@@ -10,6 +10,12 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL;
 export default function Index() {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
+
+  async function onLogOut() {
+      await deleteToken();
+      setLoggedIn(false);
+      router.replace('/login');
+  }
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -69,10 +75,19 @@ export default function Index() {
             <Link href="/watch-list" style={styles.navButton}>
               Watch List
             </Link>
-            <Link href="/login" style={styles.navButton}>
-              {loggedIn }
-              Log In
-            </Link>
+            {loggedIn ? (
+                <Pressable
+                    onPress={onLogOut}
+                >
+                    <Text style={styles.navButton}>
+                        Log Out
+                    </Text>
+                </Pressable>
+            ) : (
+                <Link href="/login" style={styles.navButton}>
+                    Log In
+                </Link>
+            )}
           </View>
 
           <Text style={{marginTop: 20}}>View recalls here.</Text>
