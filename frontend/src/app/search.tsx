@@ -3,7 +3,7 @@
 import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal } from 'react-native';
 import { styles } from './styles';
 import { useEffect, useState } from 'react';
-import { deleteToken, getGuest, getToken, setGuest } from "./storage";
+import { deleteToken, getGuest, getToken } from "./storage";
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RecallSummary } from '../../types/recall';
 import { WatchedProductModal } from '../../components/WatchedProductModal';
