@@ -74,7 +74,7 @@ class WatchedProduct(Base):
 
 # SQLite db file name and url
 sqlite_file_name = "recallrover.db"
-SQLITE_URL = f"sqlite+aiosqlite:///./{sqlite_file_name}"
+SQLITE_URL = f"sqlite+aiosqlite:///./data/{sqlite_file_name}"
 
 # creating async engine and session maker for db
 async_engine = create_async_engine(SQLITE_URL)
