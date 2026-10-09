@@ -6,6 +6,7 @@ from sqlalchemy import ForeignKey, String, JSON
 from collections.abc import AsyncGenerator
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from fastapi import Depends
+import os
 
 # base class for SQLAlchemy models to inherit from
 class Base(DeclarativeBase):
@@ -74,7 +75,11 @@ class WatchedProduct(Base):
 
 # SQLite db file name and url
 sqlite_file_name = "recallrover.db"
-SQLITE_URL = f"sqlite+aiosqlite:///./data/{sqlite_file_name}"
+
+if os.environ.get('RENDER') == 'true':
+    SQLITE_URL = f"sqlite+aiosqlite:////data/{sqlite_file_name}"
+else:
+    SQLITE_URL = f"sqlite+aiosqlite:///data/{sqlite_file_name}"
 
 # creating async engine and session maker for db
 async_engine = create_async_engine(SQLITE_URL)
