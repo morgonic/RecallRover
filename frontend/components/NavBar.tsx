@@ -5,6 +5,7 @@ import { Pressable, View, Text } from "react-native";
 
 interface NavBarProps {
     loggedIn: boolean
+    onGuestWatchList: () => void
 }
 
 
@@ -25,9 +26,19 @@ export function NavBar(props: NavBarProps) {
                 Recall Feed
             </Link>
             <Text style={styles.navButtonDivider}> | </Text>
-            <Link href="/watch-list" style={styles.navButton}>
-                Watch List
-            </Link>
+            {props.loggedIn ? (
+                <Link href="/watch-list" style={styles.navButton}>
+                    Watch List
+                </Link>
+            ) : (
+                <Pressable
+                    onPress={props.onGuestWatchList}
+                >
+                    <Text style={styles.navButton}>
+                        Watch List
+                    </Text>
+                </Pressable>
+            )}
             <Text style={styles.navButtonDivider}> | </Text>
             {props.loggedIn ? (
                 <Pressable

@@ -2,9 +2,8 @@
 
 import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal } from 'react-native';
 import { styles } from './styles';
-import { Link, router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { deleteToken, getGuest, getToken } from "./storage";
+import { deleteToken, getGuest, getToken, setGuest } from "./storage";
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RecallSummary } from '../../types/recall';
 import { WatchedProductModal } from '../../components/WatchedProductModal';
@@ -174,7 +173,10 @@ export default function SearchScreen() {
 
     return (
         <View style={styles.container}>
-            <NavBar loggedIn={loggedIn}/>
+            <NavBar 
+                loggedIn={loggedIn} 
+                onGuestWatchList={() => setGuestAuthModalVisible(true)}
+            />
             <Text style={styles.title}>Search Recalls</Text>
             <View style={{height: 14}}/>
             <View style={{flexDirection: 'row'}}>
@@ -288,6 +290,7 @@ export default function SearchScreen() {
             )}
             <Modal
                 visible={watchedProductModalVisible}
+                transparent={true}
             >
                 <WatchedProductModal
                     onSaveWatchedProduct={onSaveWatchedProduct}
@@ -302,6 +305,7 @@ export default function SearchScreen() {
 
             <Modal
                 visible={saveConfirmationVisible}
+                transparent={true}
             >
                 <SaveConfirmationModal
                     setSaveConfirmationVisible={setSaveConfirmationVisible}
@@ -310,6 +314,7 @@ export default function SearchScreen() {
 
             <Modal
                 visible={guestAuthModalVisible}
+                transparent={true}
             >
                 <GuestAuthModal
                     setGuestAuthModalVisible={setGuestAuthModalVisible} />

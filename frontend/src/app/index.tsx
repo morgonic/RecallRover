@@ -1,9 +1,10 @@
-import { Text, View, ActivityIndicator, Pressable } from "react-native";
-import { Link, router } from 'expo-router';
+import { Text, View, ActivityIndicator, Modal } from "react-native";
+import { router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { deleteToken, getGuest, getToken } from "./storage";
 import { styles } from './styles';
 import { NavBar } from "../../components/NavBar";
+import { GuestAuthModal } from "../../components/GuestAuthModal";
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -12,11 +13,7 @@ export default function Index() {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  async function onLogOut() {
-      await deleteToken();
-      setLoggedIn(false);
-      router.replace('/login');
-  }
+  const [guestAuthModalVisible, setGuestAuthModalVisible] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -66,10 +63,18 @@ export default function Index() {
         <ActivityIndicator size='large' />
       ) : (
         <>
-        <NavBar loggedIn={loggedIn} />
+        <NavBar loggedIn={loggedIn} onGuestWatchList={() => setGuestAuthModalVisible(true)} />
         <Text style={styles.title}>Recall Feed</Text>
         <View style={{height: 14}}/>
         <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
+        
+        <Modal
+            visible={guestAuthModalVisible}
+            transparent={true}
+        >
+            <GuestAuthModal
+                setGuestAuthModalVisible={setGuestAuthModalVisible} />
+        </Modal>
         </>
       )}
       

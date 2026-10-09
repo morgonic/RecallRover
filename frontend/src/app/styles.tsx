@@ -16,6 +16,13 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#3a3a3a1e',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 50
+    },
     title: {
         color: '#000',
         fontSize: 28,

@@ -8,7 +8,7 @@ interface SaveConfirmationModalProps {
 export function SaveConfirmationModal(props: SaveConfirmationModalProps) {
     
     return (
-        <View style={styles.container}>
+        <View style={styles.modalContainer}>
             <View style={styles.modal}>
                 <Text style={styles.title}>
                     Product is being watched!

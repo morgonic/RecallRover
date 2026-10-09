@@ -1,8 +1,8 @@
 // Watch List screen
 
-import { Text, View, StyleSheet, Modal, ActivityIndicator, FlatList, Pressable } from 'react-native';
+import { Text, View, Modal, ActivityIndicator, FlatList, Pressable } from 'react-native';
 import { styles } from './styles';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken, setGuest } from './storage';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
@@ -30,12 +30,6 @@ export default function WatchListScreen() {
         'Watching': '#09861e',
         'Recalled': '#860909',
         'Possible Recall': '#867e09'
-    }
-
-    async function onLogOut() {
-        await deleteToken();
-        setLoggedIn(false);
-        router.replace('/login');
     }
 
     async function getWatchedProducts(authToken: string) {
@@ -167,7 +161,10 @@ export default function WatchListScreen() {
 
     return (
         <View style={styles.container}>
-            <NavBar loggedIn={loggedIn}/>
+            <NavBar 
+                loggedIn={loggedIn}
+                onGuestWatchList={() => setGuestAuthModalVisible(true)}
+            />
             <Text style={styles.title}>Watch List</Text>
             <View style={{height: 14}}/>
             <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
@@ -248,6 +245,7 @@ export default function WatchListScreen() {
 
             <Modal
                 visible={guestAuthModalVisible}
+                transparent={true}
             >
                 <GuestAuthModal
                     setGuestAuthModalVisible={setGuestAuthModalVisible} />
@@ -256,6 +254,7 @@ export default function WatchListScreen() {
             {productEditing && (
             <Modal
                 visible={watchedProductModalVisible}
+                transparent={true}
             >
                 <WatchedProductModal
                     onSaveWatchedProduct={(edits) => editWatchedProduct(productEditing.id, edits)}
