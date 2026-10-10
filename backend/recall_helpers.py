@@ -67,12 +67,3 @@ async def get_last_check_date(session: AsyncSession):
         return new_date
     else:
         return daily_log.last_check_date
-
-### TEST function for get_last_check_date
-async def test_get_last_date():
-    async with async_session_maker() as session:
-        last_date = await get_last_check_date(session)
-        print(last_date)
-
-if __name__ == '__main__':
-    asyncio.run(test_get_last_date())
