@@ -2,6 +2,11 @@
 
 import json
 from schemas import RecallDetails, RecallSummary
+from database import DailyCheckLog, async_session_maker
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+import datetime as dt
+import asyncio
 
 # helper for building recallsummary model
 def build_recall_summary(recall_details: RecallDetails):
@@ -47,3 +52,27 @@ def build_recall_summary(recall_details: RecallDetails):
         print(f'\nSummary Product Name: {recall_summary.ProductName}')
 
         return recall_summary
+
+# helper for looking up last check date
+async def get_last_check_date(session: AsyncSession):
+
+    sql_statement = select(DailyCheckLog)
+    daily_log = await session.execute(sql_statement)
+    daily_log = daily_log.scalars().first()
+
+    if (daily_log == None):
+        today = dt.date.today()
+        new_date = today - dt.timedelta(days=90)
+        new_date = new_date.isoformat()
+        return new_date
+    else:
+        return daily_log.last_check_date
+
+### TEST function for get_last_check_date
+async def test_get_last_date():
+    async with async_session_maker() as session:
+        last_date = await get_last_check_date(session)
+        print(last_date)
+
+if __name__ == '__main__':
+    asyncio.run(test_get_last_date())
