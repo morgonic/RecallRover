@@ -4,8 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from recall_helpers import get_last_check_date, build_recall
 from cpsc_client import search_recalls
-from database import async_session_maker, Recall
+from database import async_session_maker, Recall, DailyCheckLog
 from schemas import RecallDetails
+import datetime as dt
 import httpx
 import asyncio
 
@@ -40,7 +41,11 @@ async def fetch_store_new_recalls(session: AsyncSession):
         
         await session.commit()
 
-    ## TODO: save today's date in daily_check_logs
+    # save today's date in daily_check_logs
+    sql_statement = select(DailyCheckLog)
+    new_date = DailyCheckLog(last_check_date=dt.date.today())
+    session.add(new_date)
+    await session.commit()
 
     return recall_list
 
@@ -50,13 +55,17 @@ async def test_new_recalls():
         new_recalls = await fetch_store_new_recalls(session)
         
         print('\n[New Recalls]')
-        print(f'\nFirst new recall title: {new_recalls[0].Title}')
-        print(f'First new recall date: {new_recalls[0].RecallDate}')
-        print(f'First new recall publish date: {new_recalls[0].LastPublishDate}\n')
-        print(f'\nLast new recall title: {new_recalls[-1].Title}')
-        print(f'Last new recall date: {new_recalls[-1].RecallDate}')
-        print(f'Last new recall publish date: {new_recalls[-1].LastPublishDate}\n')
-        print(f'Number of new recalls: {len(new_recalls)}\n')
+
+        if (len(new_recalls) > 0):
+            print(f'\nFirst new recall title: {new_recalls[0].Title}')
+            print(f'First new recall date: {new_recalls[0].RecallDate}')
+            print(f'First new recall publish date: {new_recalls[0].LastPublishDate}\n')
+            print(f'\nLast new recall title: {new_recalls[-1].Title}')
+            print(f'Last new recall date: {new_recalls[-1].RecallDate}')
+            print(f'Last new recall publish date: {new_recalls[-1].LastPublishDate}\n')
+            print(f'Number of new recalls: {len(new_recalls)}\n')
+        else:
+            print('No new recalls.')
 
 # for testing
 if __name__ == '__main__':
