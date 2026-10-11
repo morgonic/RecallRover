@@ -1,9 +1,10 @@
 # functions for daily recall check
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from recall_helpers import get_last_check_date
+from sqlalchemy import select
+from recall_helpers import get_last_check_date, build_recall
 from cpsc_client import search_recalls
-from database import async_session_maker
+from database import async_session_maker, Recall
 from schemas import RecallDetails
 import httpx
 import asyncio
@@ -27,7 +28,18 @@ async def fetch_store_new_recalls(session: AsyncSession):
     for recall in recalls:
         recall_list.append(RecallDetails.model_validate(recall))
 
-    ## TODO: store new recalls in db if not in db yet (recalls, recall_products)
+    # store new recalls in db if not in db yet (recalls, recall_products)
+    for recall in recall_list:
+        sql_statement = select(Recall).where(Recall.recall_id == recall.RecallID)
+        db_recall = await session.execute(sql_statement)
+        db_recall = db_recall.scalars().first()
+
+        if db_recall == None:
+            recall = build_recall(recall)
+            session.add(recall)
+        
+        await session.commit()
+
     ## TODO: save today's date in daily_check_logs
 
     return recall_list

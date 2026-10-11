@@ -51,8 +51,8 @@ class RecallProduct(Base):
     product_description: Mapped[str | None] = mapped_column(String())
     product_model: Mapped[str | None] = mapped_column(String(100))
     product_type: Mapped[str | None] = mapped_column(String(100))
-    upcs: Mapped[list[str] | None] = mapped_column(JSON)
     category_id: Mapped[str | None] = mapped_column(String(100))
+    num_of_units: Mapped[str | None] = mapped_column(String())
 
 class DailyCheckLog(Base):
     __tablename__ = 'daily_check_logs'

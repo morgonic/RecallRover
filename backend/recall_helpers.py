@@ -2,7 +2,7 @@
 
 import json
 from schemas import RecallDetails, RecallSummary
-from database import DailyCheckLog, async_session_maker
+from database import DailyCheckLog, async_session_maker, Recall, RecallProduct
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 import datetime as dt
@@ -53,9 +53,46 @@ def build_recall_summary(recall_details: RecallDetails):
 
         return recall_summary
 
+# function for building recalls + recall_products table rows with recalldetails model
+def build_recall(recall_details: RecallDetails):
+    recall = Recall(
+        recall_id =  recall_details.RecallID,
+        recall_number = recall_details.RecallNumber,
+        recall_date = recall_details.RecallDate,
+        last_publish_date = recall_details.LastPublishDate,
+        title = recall_details.Title,
+        description = recall_details.Description,
+        url = recall_details.URL,
+        consumer_contact = recall_details.ConsumerContact,
+        product_upcs = recall_details.ProductUPCs,
+        images = recall_details.Images,
+        hazards = recall_details.Hazards,
+        injuries = recall_details.Injuries,
+        remedies = recall_details.Remedies,
+        remedy_options = recall_details.RemedyOptions,
+        manufacturers = recall_details.Manufacturers,
+        retailers = recall_details.Retailers,
+        importers = recall_details.Importers,
+        distributors = recall_details.Distributors
+    )
+
+    for product in recall_details.Products:
+        recall_product = RecallProduct(
+            recall_id = recall_details.RecallID,
+            product_name = product.Name,
+            product_description = product.Description,
+            product_model = product.Model,
+            product_type = product.Type,
+            category_id = product.CategoryID,
+            num_of_units = product.NumberOfUnits
+        )
+        (recall.products).append(recall_product)
+
+    return recall
+
 # helper for looking up last check date
 async def get_last_check_date(session: AsyncSession):
-
+    # get last check date from daily
     sql_statement = select(DailyCheckLog)
     daily_log = await session.execute(sql_statement)
     daily_log = daily_log.scalars().first()
