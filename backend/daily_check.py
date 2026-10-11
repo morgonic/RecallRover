@@ -24,30 +24,47 @@ async def fetch_store_new_recalls(session: AsyncSession):
     # call cpsc client to search using search parameters
     recalls = await search_recalls(search_params, timeout=timeout)
 
-    # convert recalls to RecallDetails models
     recall_list = []
-    for recall in recalls:
-        recall_list.append(RecallDetails.model_validate(recall))
+    new_recalls_list = []
 
-    # store new recalls in db if not in db yet (recalls, recall_products)
-    for recall in recall_list:
-        sql_statement = select(Recall).where(Recall.recall_id == recall.RecallID)
-        db_recall = await session.execute(sql_statement)
-        db_recall = db_recall.scalars().first()
+    # convert recalls to RecallDetails models
+    if recalls != None:
+        for recall in recalls:
+            recall_list.append(RecallDetails.model_validate(recall))
 
-        if db_recall == None:
-            recall = build_recall(recall)
-            session.add(recall)
+        # store new recalls in db if not in db yet (recalls, recall_products)
+        for recall in recall_list:
+            sql_statement = select(Recall).where(Recall.recall_id == recall.RecallID)
+            db_recall = await session.execute(sql_statement)
+            db_recall = db_recall.scalars().first()
+
+            # if there is no recall in the db matching the recallid
+            if db_recall == None:
+                # build the db models
+                new_recall = build_recall(recall)
+                # add them to db
+                session.add(new_recall)
+                # add recalldetails model to new_recalls_list
+                new_recalls_list.append(recall)
         
+
+        # save today's date in daily_check_logs
+        # select daily_check_logs table with id descending
+        sql_statement = select(DailyCheckLog).order_by(DailyCheckLog.id.desc())
+        daily_check_log = await session.execute(sql_statement)
+        # last log is first in descending id order
+        last_log = daily_check_log.scalars().first()
+
+        # new check date is today
+        today = dt.date.today().isoformat()
+        new_date = DailyCheckLog(last_check_date=today)
+        # if the last log is None or isn't today's date then add it to db
+        if (last_log == None) or (last_log.last_check_date != today):
+            session.add(new_date)
         await session.commit()
-
-    # save today's date in daily_check_logs
-    sql_statement = select(DailyCheckLog)
-    new_date = DailyCheckLog(last_check_date=dt.date.today())
-    session.add(new_date)
-    await session.commit()
-
-    return recall_list
+        return new_recalls_list
+    else:
+        return None
 
 ### TEST function
 async def test_new_recalls():
@@ -55,17 +72,19 @@ async def test_new_recalls():
         new_recalls = await fetch_store_new_recalls(session)
         
         print('\n[New Recalls]')
-
-        if (len(new_recalls) > 0):
-            print(f'\nFirst new recall title: {new_recalls[0].Title}')
-            print(f'First new recall date: {new_recalls[0].RecallDate}')
-            print(f'First new recall publish date: {new_recalls[0].LastPublishDate}\n')
-            print(f'\nLast new recall title: {new_recalls[-1].Title}')
-            print(f'Last new recall date: {new_recalls[-1].RecallDate}')
-            print(f'Last new recall publish date: {new_recalls[-1].LastPublishDate}\n')
-            print(f'Number of new recalls: {len(new_recalls)}\n')
+        if (new_recalls != None):
+            if (len(new_recalls) > 0):
+                print(f'\nFirst new recall title: {new_recalls[0].Title}')
+                print(f'First new recall date: {new_recalls[0].RecallDate}')
+                print(f'First new recall publish date: {new_recalls[0].LastPublishDate}\n')
+                print(f'\nLast new recall title: {new_recalls[-1].Title}')
+                print(f'Last new recall date: {new_recalls[-1].RecallDate}')
+                print(f'Last new recall publish date: {new_recalls[-1].LastPublishDate}\n')
+                print(f'Number of new recalls: {len(new_recalls)}\n')
+            else:
+                print('No new recalls.')
         else:
-            print('No new recalls.')
+            print('Error retrieving Recalls: The underlying provider failed on Open.')
 
 # for testing
 if __name__ == '__main__':

@@ -93,7 +93,7 @@ def build_recall(recall_details: RecallDetails):
 # helper for looking up last check date
 async def get_last_check_date(session: AsyncSession):
     # get last check date from daily
-    sql_statement = select(DailyCheckLog)
+    sql_statement = select(DailyCheckLog).order_by(DailyCheckLog.id.desc())
     daily_log = await session.execute(sql_statement)
     daily_log = daily_log.scalars().first()
 

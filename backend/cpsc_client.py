@@ -49,14 +49,30 @@ async def search_recalls(params, timeout=timeout):
             response = await client.send(request)
             # raise exception for error status
             response.raise_for_status()
-            # return json list
-            return response.json()
+            # get json response
+            recalls = response.json()
+
+            # empty list is successful response and returns empty list
+            if recalls == []:
+                logger.info('No recalls found.')
+                return []
+            # error responses have RecallID of 0
+            elif (recalls[0]['RecallID'] == 0):
+                # log the error response from error Title
+                # should say: Error retrieving Recalls: The underlying provider failed on Open.
+                logger.error(f'{recalls[0]['Title']}')
+                return None
+            else:
+                # return json list
+                return recalls
         except httpx.HTTPError as exc:
             logger.error(f'HTTP Exception for {exc.request.url} - {type(exc).__name__}: {exc}')
-            return []
+            # errors return None
+            return None
         except ValueError as exc:
             logger.error(f'Invalid JSON response for {request.url} - {type(exc).__name__}: {exc}')
-            return []
+            # errors return None
+            return None
 
 # for test runs
 if __name__ == '__main__':
