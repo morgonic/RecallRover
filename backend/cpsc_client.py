@@ -83,41 +83,76 @@ if __name__ == '__main__':
         'RecallDateStart': '2026-01-01',
         'RecallDateEnd' : ''
     }
+
     # test parameters for product name only
     test_product_name = {'ProductName': 'Thule Sleek Car Seat Adapters'}
+    
     # test parameters for upc only
     # DOES NOT WORK FOR SOME REASON
     test_upc = {'UPC': '091021188099'}
+
     # test parameters for date range only
     test_date_range = {
-        'RecallDateStart': '2026-08-01',
-        'RecallDateEnd' : '2026-10-06'
+        'RecallDateStart': '2026-10-01',
+        'RecallDateEnd' : '2026-10-11'
     }
+
+    # run all tests
+    print('\n[Running All Params Test]')
     all_params_test = asyncio.run(search_recalls(test_params, timeout))
+    print('\n[Running Product Name Test]')
     product_name_test = asyncio.run(search_recalls(test_product_name, timeout))
+    print('\n[Running Date Range Test]')
     date_range_test = asyncio.run(search_recalls(test_date_range, timeout))
+    print('\n[Running UPC Test]')
     upc_test = asyncio.run(search_recalls(test_upc, timeout))
-    print(f'[All Params]\nNumber of recalls: {len(all_params_test)}')
-    if (len(all_params_test) != 0): 
-        print(f'First recall title: {all_params_test[0]['Title']}')
+
+    # print all params test output
+    if (all_params_test != None):
+        print(f'\n[All Params]\nNumber of recalls: {len(all_params_test)}')
+        if (len(all_params_test) != 0): 
+            print(f'First recall title: {all_params_test[0]['Title']}\n')
+        else:
+            print('\n[All Params]\nNo recalls found.\n')
     else:
-        print('No recalls found.')
-    print(f'[Product Name]\nNumber of recalls: {len(product_name_test)}')
-    if (len(product_name_test) != 0): 
-        print(f'First recall title: {product_name_test[0]['Title']}')
+        print(f'\n[All Params]\nFetch failed.\n')
+
+    # print product name test output
+    if (product_name_test != None):
+        print(f'\n[Product Name]\nNumber of recalls: {len(product_name_test)}')
+        if (len(product_name_test) != 0): 
+            print(f'First recall title: {product_name_test[0]['Title']}\n')
+        else:
+            print('\n[Product Name]\nNo recalls found.\n')
     else:
-        print('No recalls found.')
-    print(f'[Date Range]\nNumber of recalls: {len(date_range_test)}')
-    if (len(date_range_test) != 0): 
-        print(f'First recall title: {date_range_test[0]['Title']}')
+        print(f'\n[Product Name]\nFetch failed.\n')
+
+    # print date range test output
+    if (date_range_test != None):
+        print(f'\n[Date Range]\nNumber of recalls: {len(date_range_test)}')
+        if (len(date_range_test) != 0): 
+            print(f'First recall title: {date_range_test[0]['Title']}\n')
+        else:
+            print('\n[Date Range]\nNo recalls found.\n')
     else:
-        print('No recalls found.')
-    print(f'[UPC]\nNumber of recalls: {len(upc_test)}')
-    if (len(upc_test) != 0): 
-        print(f'First recall title: {upc_test[0]['Title']}')
+        print(f'\n[Date Range]\nFetch failed.\n')
+
+    # print upc test output
+    if (upc_test != None):
+        print(f'\n[UPC]\nNumber of recalls: {len(upc_test)}')
+        if (len(upc_test) != 0): 
+            print(f'First recall title: {upc_test[0]['Title']}\n')
+        else:
+            print('\n[UPC]\nNo recalls found.\n')
     else:
-        print('No recalls found.')
+        print(f'\n[UPC]\nFetch failed.\n')
+
     # timeout test
     test_timeout = httpx.Timeout(0.001)
     timeout_test = asyncio.run(search_recalls(test_params, test_timeout))
-    print(f'[Timeout Test]\nNumber of recalls: {len(timeout_test)}')
+    print('\n[Timeout Test]')
+    if (timeout_test != None):
+        print(f'Number of recalls: {len(timeout_test)}\n')
+    else:
+        logger.error('Timeout Test \"failed.\"')
+        logger.info('Timeout Test succeeded because it timed out.')

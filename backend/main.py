@@ -132,6 +132,10 @@ async def search_cpsc_recalls(
 
     # call cpsc client to search using search parameters
     recalls = await search_recalls(search_params)
+    if recalls == None:
+        logger.error('Searching recalls failed.')
+        # exception with 502 bad gateway status code
+        raise HTTPException(status_code=502, detail='Failed to get recalls from CPSC Recalls API.')
     summaries = []
     # build recalldetails and recallsummary for each recall
     for recall in recalls:
