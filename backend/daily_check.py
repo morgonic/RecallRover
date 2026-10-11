@@ -9,6 +9,17 @@ from schemas import RecallDetails
 import datetime as dt
 import httpx
 import asyncio
+import logging
+
+# basic config for logger
+logging.basicConfig(
+    format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.INFO
+)
+
+# create error logger
+logger = logging.getLogger(__name__)
 
 # function for fetching new recalls and storing them in db
 async def fetch_store_new_recalls(session: AsyncSession):
@@ -61,9 +72,17 @@ async def fetch_store_new_recalls(session: AsyncSession):
         # if the last log is None or isn't today's date then add it to db
         if (last_log == None) or (last_log.last_check_date != today):
             session.add(new_date)
+            logger.info(f'New last_check_date added: {new_date.last_check_date}')
+        else:
+            logger.info('The last_check_date was today\'s date.')
         await session.commit()
+        logger.info(
+            f'Number of recalls fetched: {len(recall_list)}\n' + 
+            f'Number of new recalls added: {len(new_recalls_list)}\n'
+        )
         return new_recalls_list
     else:
+        logger.error('Daily check skipped, daily_check_log not updated.')
         return None
 
 ### TEST function
