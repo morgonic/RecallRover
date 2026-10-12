@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from database import WatchedProduct
 from schemas import RecallDetails
-from normalizers import normalize_upc
+from normalizers import normalize_upc, normalize_model
 
 ### matching strategy interface ###
 class RecallMatchStrategy(ABC):
@@ -44,7 +44,33 @@ class UPCMatchStrategy(RecallMatchStrategy):
 
 class ModelMatchStrategy(RecallMatchStrategy):
     def match(self, watched_product: WatchedProduct, recall: RecallDetails):
-        pass
+        # normalize the watched_product model
+        watched_model = normalize_model(watched_product.product_model)
+
+        # return early if watched_model is none
+        if (watched_model == None):
+            return None
+        
+        # initialize empty list for recall models
+        recall_models = []
+
+        # loop through products in recall
+        for product in recall.Products:
+            # normalize the model
+            normalized = normalize_model(product.Model)
+
+            if (normalized != None):
+                # add normalized model to recall_models list
+                recall_models.append(normalized)
+        
+        # return early if recall_models is empty
+        if (len(recall_models) == 0):
+            return None
+        # check if the watched_model is in the list of recall_models
+        if watched_model in recall_models:
+            return 100.0
+        else:
+            return 0.0
 
 class FuzzyMatchStrategy(RecallMatchStrategy):
     def match(self, watched_product: WatchedProduct, recall: RecallDetails):
@@ -125,4 +151,53 @@ if __name__ == '__main__':
     match_score = upc_matcher.match(watched_product, recall)
     print(f'Expecting None: {match_score}')
 
-    ###
+    ### match model tests ###
+    print('\n[ModelMatchStrategy]')
+    watched_product = WatchedProduct(product_model='abc123')
+    recall = RecallDetails(RecallID='12345', Products=[{
+        "Name": "",
+        "Description": "",
+        "Model": "ABC-123",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": ""
+      }])
+    model_matcher = ModelMatchStrategy()
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting 100.0: {match_score}')
+
+    watched_product = WatchedProduct(product_model='abc123')
+    recall = RecallDetails(RecallID='12345', Products=[{
+        "Name": "",
+        "Description": "",
+        "Model": "CDE-123",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": ""
+      }])
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting 0.0: {match_score}')
+
+    watched_product = WatchedProduct(product_model='abc123')
+    recall = RecallDetails(RecallID='12345', Products=[{
+        "Name": "",
+        "Description": "",
+        "Model": "",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": ""
+      }])
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting None: {match_score}')
+
+    watched_product = WatchedProduct(product_model='')
+    recall = RecallDetails(RecallID='12345', Products=[{
+        "Name": "",
+        "Description": "",
+        "Model": "",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": ""
+      }])
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting None: {match_score}')
