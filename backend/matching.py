@@ -1,5 +1,45 @@
 # functions for matching algorithm
 
+from abc import ABC, abstractmethod
+from database import WatchedProduct
+from schemas import RecallDetails
+
+### matching strategy interface ###
+class RecallMatchStrategy(ABC):
+    @abstractmethod
+    def match(self, watched_product: WatchedProduct, recall: RecallDetails):
+        pass
+
+### concrete matching strategies ###
+class UPCMatchStrategy(RecallMatchStrategy):
+    def match(self, watched_product: WatchedProduct, recall: RecallDetails):
+        pass
+
+class ModelMatchStrategy(RecallMatchStrategy):
+    def match(self, watched_product: WatchedProduct, recall: RecallDetails):
+        pass
+
+class FuzzyMatchStrategy(RecallMatchStrategy):
+    def match(self, watched_product: WatchedProduct, recall: RecallDetails):
+        pass
+
+### strategy context ###
+class RecallMatcher:
+    def __init__(self, strategy: RecallMatchStrategy):
+        pass
+
+    def set_strategy(self, strategy: RecallMatchStrategy):
+        pass
+
+    def execute(self, watched_product: WatchedProduct, recall: RecallDetails):
+        pass
+
+### strategy client ###
+class MatchStrategyPicker:
+    def find_match(self, watched_product: WatchedProduct, recall: RecallDetails):
+        pass
+
+
 # function for returning match labels based on confidence scores
 def get_match_label(conf_score: float):
     label = ''
