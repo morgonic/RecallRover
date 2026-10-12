@@ -53,6 +53,8 @@ class ModelMatchStrategy(RecallMatchStrategy):
         
         # initialize empty list for recall models
         recall_models = []
+        # bool to flag if any product model is not none/empty
+        model_present = False
 
         # loop through products in recall
         for product in recall.Products:
@@ -60,17 +62,39 @@ class ModelMatchStrategy(RecallMatchStrategy):
             normalized = normalize_model(product.Model)
 
             if (normalized != None):
+                # flag that model is present
+                model_present = True
                 # add normalized model to recall_models list
                 recall_models.append(normalized)
+
+            # split product name into tokens to search for model in name
+            name_tokens = (product.Name).split()
+            # loop through product name tokens
+            for token in name_tokens:
+                # normalize each token
+                normalized_token = normalize_model(token)
+                # add token to recall_models if it's not none, 
+                # longer than 3 chars, 
+                # and has digit
+                if (
+                    (normalized_token != None) and 
+                    (len(normalized_token) > 3) and
+                    (any(char.isdigit() for char in normalized_token))
+                ):
+                    recall_models.append(normalized_token)
         
         # return early if recall_models is empty
         if (len(recall_models) == 0):
             return None
-        # check if the watched_model is in the list of recall_models
+        # 100.0 if the watched_model is in the list of recall_models
         if watched_model in recall_models:
             return 100.0
-        else:
+        # 0.0 if model is not in recall_models and a product.Model is present
+        elif (watched_model not in recall_models) and (model_present):
             return 0.0
+        # none if watched_model is not in recall_models and no recall products had models
+        else:
+            return None
 
 class FuzzyMatchStrategy(RecallMatchStrategy):
     def match(self, watched_product: WatchedProduct, recall: RecallDetails):
@@ -201,3 +225,36 @@ if __name__ == '__main__':
       }])
     match_score = model_matcher.match(watched_product, recall)
     print(f'Expecting None: {match_score}')
+
+    # test searching for model using product name
+    watched_product = WatchedProduct(product_model='metrous2')
+    recall = RecallDetails(RecallID='12345', Products=[{
+        "Name": "METROUS1, METROUS2 and METROUS4 Compact City Strollers",
+        "Description": "",
+        "Model": "",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": "About 2,800"
+      }])
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting 100.0: {match_score}')
+
+    watched_product = WatchedProduct(product_model='city')
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting None: {match_score}')
+
+    watched_product = WatchedProduct(product_model='metrous9')
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting None: {match_score}')
+
+    watched_product = WatchedProduct(product_model='metrous9')
+    recall = RecallDetails(RecallID='12345', Products=[{
+        "Name": "METROUS1, METROUS2 and METROUS4 Compact City Strollers",
+        "Description": "",
+        "Model": "METROUS2",
+        "Type": "",
+        "CategoryID": "",
+        "NumberOfUnits": "About 2,800"
+      }])
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting 0.0: {match_score}')
