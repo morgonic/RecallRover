@@ -3,7 +3,8 @@
 from abc import ABC, abstractmethod
 from database import WatchedProduct
 from schemas import RecallDetails
-from normalizers import normalize_upc, normalize_model
+from normalizers import normalize_upc, normalize_model, normalize_text
+from rapidfuzz import fuzz
 
 ### matching strategy interface ###
 class RecallMatchStrategy(ABC):
@@ -97,8 +98,80 @@ class ModelMatchStrategy(RecallMatchStrategy):
             return None
 
 class FuzzyMatchStrategy(RecallMatchStrategy):
+    # name_weight and brand_weight are attributes in init
+    def __init__(self, name_weight=0.7, brand_weight=0.3):
+        self.name_weight = name_weight
+        self.brand_weight = brand_weight
+
     def match(self, watched_product: WatchedProduct, recall: RecallDetails):
-        pass
+        # normalize the watched product name
+        normal_name = normalize_text(watched_product.product_name)
+        # normalize the watched product brand
+        normal_brand = normalize_text(watched_product.product_brand)
+
+        # initialize variables for scores
+        name_score = None
+        brand_score = None
+        fuzzy_score = None
+
+        # initialize list of product names/brands
+        recall_names = []
+        recall_brands = []
+
+        # loop through recall products to normalize and collect names
+        for product in recall.Products:
+            normal_recall_name = normalize_text(product.Name)
+            if (normal_recall_name != None):
+                recall_names.append(normal_recall_name)
+
+        # only score if watched_product has a product name
+        if (normal_name != None):
+            # get the fuzzy name score
+            for name in recall_names:
+                score = fuzz.token_set_ratio(normal_name, name)
+                if (name_score == None) or (score > name_score):
+                    name_score = score
+
+        # normalize and collect brands from titles
+        normal_title = normalize_text(recall.Title)
+        if (normal_title != None):
+            recall_brands.append(normal_title)
+        # normalize and collect brands from manufacturers
+        for manufacturer in recall.Manufacturers:
+            normal_manuf = normalize_text(manufacturer['Name'])
+            if (normal_manuf != None):
+                recall_brands.append(normal_manuf)
+
+        # only score if watched_product has a brand
+        if (normal_brand != None):
+            # get the fuzzy brand score
+            for brand in recall_brands:
+                score = fuzz.token_set_ratio(normal_brand, brand)
+                # set brand_score if it's none or less than the current score
+                if (brand_score == None) or (score > brand_score):
+                    brand_score = score
+
+        # check if name only or brand only
+        name_only = (name_score != None) and (brand_score == None)
+        brand_only = (brand_score != None) and (name_score == None)
+
+        # combine name and brand scores
+        if (name_score != None) and (brand_score != None):
+            # apply weights
+            name_score *= self.name_weight
+            brand_score *= self.brand_weight
+            # combine
+            fuzzy_score = name_score + brand_score
+        # only return name score if name only
+        if name_only:
+            fuzzy_score = name_score
+        # only return brand score if brand only
+        if brand_only:
+            # apply weight
+            brand_score *= self.brand_weight
+            fuzzy_score = brand_score
+        
+        return fuzzy_score
 
 ### strategy context ###
 class RecallMatcher:
@@ -258,3 +331,81 @@ if __name__ == '__main__':
       }])
     match_score = model_matcher.match(watched_product, recall)
     print(f'Expecting 0.0: {match_score}')
+
+
+    ### fuzzy match tests ###
+    print('\n[FuzzyMatchStrategy]')
+    fuzzy_matcher = FuzzyMatchStrategy()
+
+    print('(Name and Brand)')
+    watched_product = WatchedProduct(
+        product_name='mainstays 9 drawer dresser', 
+        product_brand='mainstays'
+    )
+    recall = RecallDetails(
+        RecallID=10957, 
+        Title='Walmart Reannounces Recall of Mainstays Nine-Drawer Fabric Dressers Due to Risk of Serious Injury or Death from Tip-Over and Entrapment Hazards; Walmart Distributed Recalled Dressers Post-Recall; Sold to Consumers Through Liquidators',
+        Products=[
+            {
+                "Name": "Mainstays 9-Drawer Fabric Dressers",
+                "Description": "",
+                "Model": "",
+                "Type": "Desks, Dressers, Chests, Bureaus, or Buffets",
+                "CategoryID": "237",
+                "NumberOfUnits": "About 165,250 (About 165,000 of these dressers were previously recalled in May 2026)"
+            }
+        ],
+        Manufacturers=[
+            {
+                "Name": "Hop Thang Interior Wood Co. Ltd., of Vietnam",
+                "CompanyID": ""
+            }
+        ]
+    )
+    match_score = fuzzy_matcher.match(watched_product, recall)
+    print(f'Expecting score>=90: {match_score}\n')
+
+    print('(Name and Brand)')
+    watched_product = WatchedProduct(
+        product_name='fabric dresser', 
+        product_brand='mainstays'
+    )
+    match_score = fuzzy_matcher.match(watched_product, recall)
+    print(f'Expecting 70<=score<90: {match_score}\n')
+
+    print('(Name and Brand)')
+    watched_product = WatchedProduct(
+        product_name='wooden dresser', 
+        product_brand='walmart'
+    )
+    match_score = fuzzy_matcher.match(watched_product, recall)
+    print(f'Expecting score<70: {match_score}\n')
+
+    print('(Name and Brand)')
+    watched_product = WatchedProduct(
+        product_name='dresser', 
+        product_brand='mainstays'
+    )
+    match_score = fuzzy_matcher.match(watched_product, recall)
+    print(f'Expecting score<70: {match_score}\n')
+
+    print('(Name Only)')
+    watched_product = WatchedProduct(
+        product_name='fabric dresser'
+    )
+    match_score = fuzzy_matcher.match(watched_product, recall)
+    print(f'Expecting score<70: {match_score}\n')
+
+    print('(Brand Only)')
+    watched_product = WatchedProduct(
+        product_brand='mainstays'
+    )
+    match_score = fuzzy_matcher.match(watched_product, recall)
+    print(f'Expecting score<70: {match_score}\n')
+
+    print('(No Name/Brand)')
+    watched_product = WatchedProduct(
+        # no name, no brand
+    )
+    match_score = fuzzy_matcher.match(watched_product, recall)
+    print(f'Expecting None: {match_score}\n')
