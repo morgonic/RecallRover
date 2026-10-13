@@ -176,18 +176,57 @@ class FuzzyMatchStrategy(RecallMatchStrategy):
 ### strategy context ###
 class RecallMatcher:
     def __init__(self, strategy: RecallMatchStrategy):
-        pass
+        self.strategy = strategy
 
     def set_strategy(self, strategy: RecallMatchStrategy):
-        pass
+        self.strategy = strategy
 
     def execute(self, watched_product: WatchedProduct, recall: RecallDetails):
-        pass
+        return self.strategy.match(watched_product, recall)
 
 ### strategy client ###
 class MatchStrategyPicker:
+    def __init__(self, upc_strategy=None, model_strategy=None, fuzzy_strategy=None):
+        self.upc_strategy = upc_strategy if (upc_strategy != None) else UPCMatchStrategy()
+        self.model_strategy = model_strategy if (model_strategy != None) else ModelMatchStrategy()
+        self.fuzzy_strategy = fuzzy_strategy if (fuzzy_strategy != None) else FuzzyMatchStrategy()
+        self.strategy_context = RecallMatcher(strategy=self.upc_strategy)
+
     def find_match(self, watched_product: WatchedProduct, recall: RecallDetails):
-        pass
+        # store RecallMatcher context
+        context = self.strategy_context
+        # set first strategy as upc_strategy
+        context.set_strategy(self.upc_strategy)
+        
+        # execute upc match, store score
+        upc_score = context.execute(watched_product=watched_product, recall=recall)
+        # return 100.0 early if upc score is 100.0
+        if (upc_score == 100.0):
+            return 100.0
+
+        # set next strategy as model
+        context.set_strategy(self.model_strategy)
+
+        # execute model match, store score
+        model_score = context.execute(watched_product=watched_product, recall=recall)
+        # return 100.0 early if model score is 100.0
+        if (model_score == 100.0):
+            return 100.0
+
+        # set next strategy as fuzzy
+        context.set_strategy(self.fuzzy_strategy)
+        
+        # execute fuzzy match, store score
+        fuzzy_score = context.execute(watched_product=watched_product, recall=recall)
+        # if fuzzy score is None, make it 0.0
+        if (fuzzy_score == None):
+            fuzzy_score = 0.0
+        # cap fuzzy score at 89 when upc or model are 0.0
+        if (upc_score == 0.0) or (model_score == 0.0):
+            if (fuzzy_score > 89.0):
+                fuzzy_score = 89.0
+        
+        return fuzzy_score
 
 
 # function for returning match labels based on confidence scores
@@ -409,3 +448,145 @@ if __name__ == '__main__':
     )
     match_score = fuzzy_matcher.match(watched_product, recall)
     print(f'Expecting None: {match_score}\n')
+
+    ### matchstrategypicker tests ###
+    print('\n[MatchStrategyPicker]')
+    strategy_picker = MatchStrategyPicker()
+    recall = RecallDetails(
+        RecallID=10669,
+        Title='Nexgrill Recalls Over 10.2 Million Metal Wire Bristle Grill Brushes Due to Ingestion Hazard; Sold at Home Depot',
+        Products=[
+            {
+                "Name": "Metal Wire Bristle Grill Brushes",
+                "Description": "",
+                "Model": "ABC-123",
+                "Type": "",
+                "CategoryID": "",
+                "NumberOfUnits": "About 10.2 million"
+            }
+        ],
+        ProductUPCs=[
+            {'UPC': '0001234567'}, 
+            {'UPC': '00123456789'},
+            {'UPC': '123456790'}
+        ],
+        Manufacturers=[
+            {
+                "Name": "Nexgrill Industries, Inc. of Chino, California",
+                "CompanyID": ""
+            }
+        ]
+    )
+
+    print('(UPC, Model, Name, Brand)')
+    watched_product = WatchedProduct(
+        product_name='grill brush',
+        product_brand='nexgrill',
+        product_model='abc123',
+        product_upc='0123456789'
+    )
+    score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
+    print(f'Expecting 100.0: {score}')
+
+    print('(Model, Name, Brand)')
+    watched_product = WatchedProduct(
+        product_name='grill brush',
+        product_brand='nexgrill',
+        product_model='abc123',
+        product_upc=None
+    )
+    score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
+    print(f'Expecting 100.0: {score}')
+
+    print('(Name, Brand)')
+    watched_product = WatchedProduct(
+        product_name='grill brush',
+        product_brand='nexgrill',
+        product_model=None,
+        product_upc=None
+    )
+    score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
+    print(f'Expecting 70<=score<90: {score}')
+
+    print('(Name, Brand)')
+    watched_product = WatchedProduct(
+        product_name='metal wire grill brushes',
+        product_brand='nexgrill',
+        product_model=None,
+        product_upc=None
+    )
+    score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
+    print(f'Expecting 100.0: {score}')
+
+    print('(0.0 UPC, 0.0 Model, Name, Brand)')
+    watched_product = WatchedProduct(
+        product_name='metal wire grill brushes',
+        product_brand='nexgrill',
+        product_model='cde-345',
+        product_upc='04567891011'
+    )
+    score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
+    print(f'Expecting 89.0: {score}')
+
+    print('(0.0 UPC, 0.0 Model, No Name/Brand)')
+    watched_product = WatchedProduct(
+        product_name=None,
+        product_brand=None,
+        product_model='cde-345',
+        product_upc='04567891011'
+    )
+    score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
+    print(f'Expecting 0.0: {score}')
+
+    print('(Multiple Products, Matching Model)')
+    recall = RecallDetails(
+        RecallID=10669,
+        Title='Nexgrill Recalls Over 10.2 Million Metal Wire Bristle Grill Brushes Due to Ingestion Hazard; Sold at Home Depot',
+        Products=[
+            {
+                "Name": "Metal Wire Bristle Grill Brushes",
+                "Description": "",
+                "Model": "ABC-123",
+                "Type": "",
+                "CategoryID": "",
+                "NumberOfUnits": "About 10.2 million"
+            },
+            {
+                "Name": "Metal Wire Bristle Grill Brushes",
+                "Description": "",
+                "Model": "CDE-345",
+                "Type": "",
+                "CategoryID": "",
+                "NumberOfUnits": "About 10.2 million"
+            }
+        ],
+        ProductUPCs=[
+            {'UPC': '0001234567'}, 
+            {'UPC': '00123456789'},
+            {'UPC': '123456790'}
+        ],
+        Manufacturers=[
+            {
+                "Name": "Nexgrill Industries, Inc. of Chino, California",
+                "CompanyID": ""
+            }
+        ]
+    )
+    watched_product = WatchedProduct(
+        product_name=None,
+        product_brand=None,
+        product_model='cde345',
+        product_upc='04567891011'
+    )
+    score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
+    print(f'Expecting 100.0: {score}')
+
+    print('(Multiple Products, Matching UPC)')
+    watched_product = WatchedProduct(
+        product_name=None,
+        product_brand=None,
+        product_model=None,
+        product_upc='00123456790'
+    )
+    score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
+    print(f'Expecting 100.0: {score}')
