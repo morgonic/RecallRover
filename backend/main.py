@@ -102,6 +102,8 @@ async def authenticated_route(user: User = Depends(current_active_user)):
 # manually run daily check, endpoint protected by user auth
 @app.post('/recalls/daily-check', tags=['recalls'])
 async def run_manual_daily_check(user: User = Depends(current_active_user)):
+    # log who ran the check
+    logger.info(f'User email {user.email} called run_manual_daily_check.')
     # for now, run_daily_check returns the length of the new recalls
     num_of_new_recalls = await run_daily_check()
     # return the number of new recalls stored
