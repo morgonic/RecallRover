@@ -13,6 +13,7 @@ from schemas import (
 from users import auth_backend, current_active_user, fastapi_users
 from cpsc_client import search_recalls
 from recall_helpers import build_recall_summary
+from scheduler import start_scheduler, stop_scheduler
 from dotenv import load_dotenv
 import os
 import logging
@@ -21,11 +22,17 @@ import datetime as dt
 # loading environment variables from .env file
 load_dotenv()
 
-# lifespan for FastAPI app, creates database/tables on startup
+# lifespan for FastAPI app
+# on startup: creates db/tables, starts apscheduler
+# on shutdown: stops apscheduler
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # on startup
     await create_db_and_tables()
+    await start_scheduler()
     yield
+    # on shutdown
+    await stop_scheduler()
 
 # FastAPI app instance with lifespan
 app = FastAPI(lifespan=lifespan)

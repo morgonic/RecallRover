@@ -85,6 +85,20 @@ async def fetch_store_new_recalls(session: AsyncSession):
         logger.error('Daily check skipped, daily_check_log not updated.')
         return None
 
+# function to run the daily check with fetch_store_new_recalls
+async def run_daily_check():
+    async with async_session_maker() as session:
+        new_recalls = await fetch_store_new_recalls(session)
+        if (new_recalls != None):
+            num_of_recalls = len(new_recalls)
+            logger.info(f'Fetched and stored {num_of_recalls} recalls.')
+            return num_of_recalls
+        else:
+            logger.warning('New recall fetch returned None.')
+            return None
+
+
+
 ### TEST function
 async def test_new_recalls():
     async with async_session_maker() as session:
