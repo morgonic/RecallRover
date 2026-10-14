@@ -67,6 +67,7 @@ class WatchedProduct(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[str] = mapped_column(ForeignKey('user.id'))
+    recall_id: Mapped[int | None] = mapped_column(ForeignKey('recalls.recall_id'), default=None)
     status_label: Mapped[str] = mapped_column(String(), default='Watching')
     product_name: Mapped[str | None] = mapped_column(String())
     product_brand: Mapped[str | None] = mapped_column(String())

@@ -73,6 +73,7 @@ class WatchedProductCreate(BaseModel):
 # schema for reading watched product data from backend
 class WatchedProductRead(BaseModel):
     id: int
+    recall_id: int | None = None
     status_label: str
     product_name: str | None = None
     product_brand: str | None = None

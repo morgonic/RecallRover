@@ -4,7 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from recall_helpers import get_last_check_date, build_recall
 from cpsc_client import search_recalls
-from database import async_session_maker, Recall, DailyCheckLog
+from matching import MatchStrategyPicker, get_match_label
+from database import async_session_maker, Recall, DailyCheckLog, WatchedProduct
 from schemas import RecallDetails
 import datetime as dt
 import httpx
@@ -85,6 +86,49 @@ async def fetch_store_new_recalls(session: AsyncSession):
         logger.error('Daily check skipped, daily_check_log not updated.')
         return None
 
+# helper function to score and label watched products from new recalls
+async def score_label_watched_products(session: AsyncSession, new_recalls: list[RecallDetails]):
+    # select all watched products from db
+    sql_statement = select(WatchedProduct)
+    watched_products = await session.execute(sql_statement)
+    watched_products = watched_products.scalars().all()
+
+    # create matchstrategypicker client
+    client = MatchStrategyPicker()
+
+    # rank labels
+    label_rank = {
+        'No match': 0,
+        'Watching': 1,
+        'Possible Recall': 2,
+        'Recalled': 3
+    }
+
+    # initialize list of updated watched products
+    updated_watch_list = []
+
+    # loop through recalls and watched products
+    for recall in new_recalls:
+        for product in watched_products:
+            # score each recall against each watched product
+            score = client.find_match(product, recall)
+            # label each watched product based on score
+            label = get_match_label(score)
+            # change watched product label/recall_id if match label is higher rank
+            if (label_rank[label] > label_rank[product.status_label]):
+                product.status_label = label
+                product.recall_id = recall.RecallID
+                # add watched product to updated list if it's not in there already
+                if (product not in updated_watch_list):
+                    updated_watch_list.append(product)
+    
+    ## TODO: send email to users with updated watch list products
+
+    await session.commit()
+
+    return updated_watch_list
+
+
 # function to run the daily check with fetch_store_new_recalls
 async def run_daily_check():
     async with async_session_maker() as session:
@@ -92,6 +136,8 @@ async def run_daily_check():
         if (new_recalls != None):
             num_of_recalls = len(new_recalls)
             logger.info(f'Fetched and stored {num_of_recalls} recalls.')
+            new_watch_list = await score_label_watched_products(session, new_recalls)
+            logger.info(f'Updated watch list products (id/label): {[(product.id, product.status_label) for product in new_watch_list]}')
             return num_of_recalls
         else:
             logger.warning('New recall fetch returned None.')
