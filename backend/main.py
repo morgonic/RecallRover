@@ -14,6 +14,7 @@ from users import auth_backend, current_active_user, fastapi_users
 from cpsc_client import search_recalls
 from recall_helpers import build_recall_summary
 from scheduler import start_scheduler, stop_scheduler
+from daily_check import run_daily_check
 from dotenv import load_dotenv
 import os
 import logging
@@ -94,6 +95,21 @@ async def root():
 @app.get("/authenticated-route")
 async def authenticated_route(user: User = Depends(current_active_user)):
     return {"message": f"Hello {user.email}!"}
+
+
+## Daily recall check routes ##
+
+# manually run daily check, endpoint protected by user auth
+@app.post('/recalls/daily-check', tags=['recalls'])
+async def run_manual_daily_check(user: User = Depends(current_active_user)):
+    # for now, run_daily_check returns the length of the new recalls
+    num_of_new_recalls = await run_daily_check()
+    # return the number of new recalls stored
+    if (num_of_new_recalls != None):
+        return {'num_of_new_recalls': num_of_new_recalls}
+    # if None is returned, raise exception for bad gateway
+    else:
+        raise HTTPException(status_code=502, detail='Daily check failed to reach CPSC Recalls API.')
 
 
 ## Recalls routes ##

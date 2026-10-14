@@ -11,8 +11,8 @@ job_defaults = {
 }
 # build scheduler with EST timezone and job defaults
 scheduler = AsyncIOScheduler(timezone='America/New_York', job_defaults=job_defaults)
-# add run_daily_check as the job to run at 60 second intervals for testing
-scheduler.add_job(run_daily_check, 'interval', seconds=60, id='daily_check')
+# add run_daily_check as the job to run every day at 6am with cron trigger
+scheduler.add_job(run_daily_check, 'cron', hour=6, minute=0, id='daily_check')
 
 # function to start the scheduler
 async def start_scheduler():
