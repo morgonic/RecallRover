@@ -5,7 +5,8 @@ from sqlalchemy import select
 from recall_helpers import get_last_check_date, build_recall
 from cpsc_client import search_recalls
 from matching import MatchStrategyPicker, get_match_label
-from database import async_session_maker, Recall, DailyCheckLog, WatchedProduct
+from resend_email import send_email_alert
+from database import async_session_maker, Recall, DailyCheckLog, WatchedProduct, User
 from schemas import RecallDetails
 import datetime as dt
 import httpx
@@ -121,10 +122,53 @@ async def score_label_watched_products(session: AsyncSession, new_recalls: list[
                 # add watched product to updated list if it's not in there already
                 if (product not in updated_watch_list):
                     updated_watch_list.append(product)
-    
-    ## TODO: send email to users with updated watch list products
+
+
+    # initialize empty dict for user email lookup
+    user_info = {}
+    # empty dict for recall lookup
+    recall_info = {}
+
+    if (len(updated_watch_list) > 0):
+        # get user ids for updated watched products
+        user_ids = []
+        for product in updated_watch_list:
+            user_ids.append(product.user_id)
+
+        # get users from db
+        sql_statement = select(User).where(User.id.in_(user_ids))
+        users_to_email = await session.execute(sql_statement)
+        users_to_email = users_to_email.scalars().all()
+
+        # build dict to look up emails
+        for user in users_to_email:
+            # id as key, email as value
+            user_info[user.id] = user.email
+        # build dict to look up recalls/images
+        for recall in new_recalls:
+            # recallid as key, recalldetails as value
+            recall_info[recall.RecallID] = recall
 
     await session.commit()
+
+    # lookup user email, recall and image to send email
+    for product in updated_watch_list:
+        user_email = user_info.get(product.user_id)
+        recall = recall_info.get(product.recall_id)
+        image = None
+
+        if (len(recall.Images or []) > 0):
+            image = recall.Images[0]['URL']
+
+        # send user email with product/recall info
+        send_email_alert(
+            email=user_email,
+            product_name=product.product_name,
+            status_label=product.status_label,
+            recall_title=recall.Title,
+            recall_url=recall.URL,
+            img_url=image
+        )
 
     return updated_watch_list
 

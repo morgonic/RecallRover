@@ -77,12 +77,16 @@ class ModelMatchStrategy(RecallMatchStrategy):
                 # add token to recall_models if it's not none, 
                 # longer than 3 chars, 
                 # and has digit
-                if (
-                    (normalized_token != None) and 
-                    (len(normalized_token) > 3) and
-                    (any(char.isdigit() for char in normalized_token))
-                ):
+                if is_model(normalized_token):
                     recall_models.append(normalized_token)
+            
+        # split image captions into tokens to search for model name
+        for image in recall.Images or []:
+            img_cap_tokens = (image['Caption'].split())
+            for token in img_cap_tokens:
+                normal_img_token = normalize_model(token)
+                if is_model(normal_img_token):
+                    recall_models.append(normal_img_token)
         
         # return early if recall_models is empty
         if (len(recall_models) == 0):
@@ -243,6 +247,18 @@ def get_match_label(conf_score: float):
         label = 'No match'
     
     return label
+
+# helper for determining if a string is model-like
+def is_model(string: str):
+    # models are not none, are longer than 3 chars, and have a digit
+    if (
+        (string != None) and 
+        (len(string) > 3) and 
+        any(char.isdigit() for char in string)
+    ):
+        return True
+    else:
+        return False
 
 # for testing
 if __name__ == '__main__':
@@ -590,3 +606,36 @@ if __name__ == '__main__':
     )
     score = strategy_picker.find_match(watched_product=watched_product, recall=recall)
     print(f'Expecting 100.0: {score}')
+
+    print('\n[ModelMatchStrategy (Image Captions)]')
+    watched_product = WatchedProduct(
+        product_name='baby bath seat', 
+        product_brand='onthewei',
+        product_model='my002'
+    )
+    recall = RecallDetails(
+        RecallID=11014, 
+        Title='ONTHEWEI Recalls Baby Bath Seats Due to Risk of Serious Injury or Death to Children from Drowning; Violate Mandatory Standard for Infant Bath Seats',
+        Products=[
+            {
+                "Name": "ONTHEWEI Baby Bath Seats",
+                "Description": "",
+                "Model": "",
+                "Type": "Baby Bathtub Seats or Rings (Not Toys)",
+                "CategoryID": "807",
+                "NumberOfUnits": "About 2,140"
+            }
+        ],
+        Images=[
+            {
+                "URL": "https://www.cpsc.gov/s3fs-public/ONTHEWEI1.png",
+                "Caption": "Recalled ONTHEWEI Baby Bath Seats"
+            },
+            {
+                "URL": "https://www.cpsc.gov/s3fs-public/ONTHEWEI2.jpg",
+                "Caption": "\"Model No: MY002\" and \"Date of manufacturer: 2026/1/10\" are printed on a label on the back of the recalled ONTHEWEI bath seat"
+            }
+        ]
+    )
+    match_score = model_matcher.match(watched_product, recall)
+    print(f'Expecting 100.0: {match_score}\n')
