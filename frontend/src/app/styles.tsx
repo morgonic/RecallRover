@@ -280,5 +280,10 @@ export const styles = StyleSheet.create({
         width: '100%',
         marginTop: 20,
         resizeMode: 'contain'
+    },
+    loadMoreView: {
+        alignItems: 'center', 
+        marginBottom: 30, 
+        marginTop: 10
     }
 })
