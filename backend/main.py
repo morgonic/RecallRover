@@ -117,6 +117,43 @@ async def run_manual_daily_check(user: User = Depends(current_active_user)):
 
 ## Recalls routes ##
 
+# recall feed endpoint
+@app.get('/recalls/feed', response_model=list[RecallSummary], tags=['recalls'])
+async def get_recall_feed(
+    session: AsyncSession = Depends(get_async_session),
+    limit: int = 20, 
+    offset: int = 0
+):
+    # get limited recalls (default 20) from the db
+    # descend by date and then recallID (for recalls on same date)
+    # load products at the same time
+    # offset will be used for Load More button
+    sql_statement = (
+        select(Recall)
+        .order_by(Recall.recall_date.desc())
+        .order_by(Recall.recall_id.desc())
+        .limit(limit)
+        .offset(offset)
+        .options(selectinload(Recall.products))
+    )
+    recalls = await session.execute(sql_statement)
+    recalls = recalls.scalars().all()
+
+    # initialize empty list for RecallSummary objects
+    recall_summaries = []
+
+    # loop through recalls from db
+    for recall in recalls:
+        # build RecallDetails and RecallSummary models
+        details = build_recall_details(recall)
+        summary = build_recall_summary(details)
+        # add RecallSummary to list
+        recall_summaries.append(summary)
+
+    return recall_summaries
+    
+
+
 # search endpoint
 @app.get('/recalls/search', response_model=list[RecallSummary], tags=['recalls'])
 async def search_cpsc_recalls(
