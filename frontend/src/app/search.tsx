@@ -235,7 +235,13 @@ export default function SearchScreen() {
                     numColumns={3}
                     keyExtractor={(recall) => String(recall.RecallID)}
                     renderItem={({item}) => (
-                        <View style={styles.resultsCard}>
+                        <Pressable 
+                            style={styles.resultsCard}
+                            onPress={() => {
+                                setSelectedRecall(item.RecallID)
+                                setRecallDetailsModalVisible(true)
+                            }}
+                        >
                             <Text 
                                 style={styles.resultsTitle}
                                 numberOfLines={2}
@@ -268,7 +274,7 @@ export default function SearchScreen() {
                             >
                                 {item.Hazard}
                             </Text>
-                        </View>
+                        </Pressable>
                     )}
                 />
             ) : (loading || saving) ? (

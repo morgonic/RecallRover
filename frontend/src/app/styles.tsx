@@ -221,5 +221,40 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 10,
         padding: 10
+    },
+    detailsTitle: {
+        color: '#000',
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20
+    },
+    recallTitle: {
+        color: '#000',
+        fontSize: 22,
+        fontWeight: '700',
+        textAlign: 'left',
+        marginTop: 20
+    },
+    detailsHeader: {
+        color: '#000',
+        fontSize: 20,
+        fontWeight: '700',
+        textDecorationLine: 'underline',
+        textAlign: 'left',
+        marginBottom: 20
+    },
+    detailsText: {
+        color: '#000',
+        fontSize: 18,
+        fontWeight: '500',
+        textAlign: 'left',
+        marginBottom: 20
+    },
+    textLink: {
+        color: '#4176c4',
+        textDecorationLine: 'underline',
+        fontSize: 20,
+        fontWeight: '600'
     }
 })
