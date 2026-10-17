@@ -1,7 +1,7 @@
 # helper functions for recalls file
 
 import json
-from schemas import RecallDetails, RecallSummary
+from schemas import RecallDetails, RecallSummary, RecallProductDetails
 from database import DailyCheckLog, async_session_maker, Recall, RecallProduct
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -89,6 +89,44 @@ def build_recall(recall_details: RecallDetails):
         (recall.products).append(recall_product)
 
     return recall
+
+# function for building RecallDetails and RecallProductDetails using Recall SQLAlchemy model
+def build_recall_details(recall: Recall):
+    recall_products = []
+    for product in recall.products or []:
+        recall_product_details = RecallProductDetails(
+            Name = product.product_name,
+            Description = product.product_description,
+            Model = product.product_model,
+            Type = product.product_type,
+            CategoryID = product.category_id,
+            NumberOfUnits = product.num_of_units
+        )
+        recall_products.append(recall_product_details)
+    
+    recall_details = RecallDetails(
+        RecallID =  recall.recall_id,
+        RecallNumber = recall.recall_number,
+        RecallDate = recall.recall_date,
+        LastPublishDate = recall.last_publish_date,
+        Title = recall.title,
+        Description = recall.description,
+        URL = recall.url,
+        ConsumerContact = recall.consumer_contact,
+        Products = recall_products,
+        ProductUPCs = recall.product_upcs,
+        Images = recall.images,
+        Hazards = recall.hazards,
+        Injuries = recall.injuries,
+        Remedies = recall.remedies,
+        RemedyOptions = recall.remedy_options,
+        Manufacturers = recall.manufacturers,
+        Retailers = recall.retailers,
+        Importers = recall.importers,
+        Distributors = recall.distributors
+    )
+
+    return recall_details
 
 # helper for looking up last check date
 async def get_last_check_date(session: AsyncSession):

@@ -2,17 +2,18 @@
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from database import create_db_and_tables, User, get_async_session, WatchedProduct
+from database import create_db_and_tables, User, get_async_session, WatchedProduct, Recall
 from contextlib import asynccontextmanager
 from sqlalchemy import select, and_
+from sqlalchemy.orm import selectinload
 from schemas import (
     UserRead, UserCreate, UserUpdate, 
-    RecallDetails, RecallSummary, 
+    RecallDetails, RecallSummary, RecallProductDetails,
     WatchedProductRead, WatchedProductCreate
 )
 from users import auth_backend, current_active_user, fastapi_users
 from cpsc_client import search_recalls
-from recall_helpers import build_recall_summary
+from recall_helpers import build_recall_summary, build_recall, build_recall_details
 from scheduler import start_scheduler, stop_scheduler
 from daily_check import run_daily_check
 from dotenv import load_dotenv
@@ -171,6 +172,45 @@ async def search_cpsc_recalls(
         summaries.append(summary)
     # return list of summaries
     return summaries
+
+# get recall details by recall_id endpoint
+@app.get('/recalls/{recall_id}', response_model=RecallDetails, tags=['recalls'])
+async def get_recall_details(
+    recall_id: int, 
+    session: AsyncSession = Depends(get_async_session)
+):
+    # try to get recall from db
+    # selectinload to fix missinggreenlet sqlalchemy error, load products in same query
+    sql_statement = select(Recall).where(Recall.recall_id == recall_id).options(selectinload(Recall.products))
+    recall = await session.execute(sql_statement)
+    recall = recall.scalars().first()
+
+    # if db returns the recall, build recalldetails pydantic model for endpoint response_model
+    if (recall != None):
+        recall_details = build_recall_details(recall)
+        return recall_details
+    # if db does not return recall
+    else:
+        # search for it by RecallID
+        search_params = {'RecallID': recall_id}
+        cpsc_recall = await search_recalls(params=search_params)
+        # if cpsc returns None, the fetch failed
+        if (cpsc_recall == None):
+            logger.warning('HTTPException 502, bad gateway.')
+            raise HTTPException(status_code=502, detail='Failed to get recall from CPSC Recalls API.')
+        # if it was an empty list, the fetch succeeded but did not return anything
+        elif (cpsc_recall == []):
+            logger.warning('HTTPException 404, recall not found.')
+            raise HTTPException(status_code=404, detail='Recall not found.')
+        # otherwise build the recalldetails model, add to db
+        else:
+            recall_details = RecallDetails.model_validate(cpsc_recall[0])
+            recall = build_recall(recall_details)
+            session.add(recall)
+            await session.commit()
+            logger.info(f'Recall {recall_id} added to DB.')
+            return recall_details
+            
 
 
 ## Watched Products routes ##
