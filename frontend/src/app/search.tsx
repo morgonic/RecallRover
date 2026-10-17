@@ -11,6 +11,7 @@ import { WatchedProductInput } from '../../types/watched-products';
 import { SaveConfirmationModal } from '../../components/SaveConfirmationModal';
 import { NavBar } from '../../components/NavBar';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
+import { RecallDetailsModal } from '../../components/RecallDetailsModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -39,6 +40,9 @@ export default function SearchScreen() {
     const [watchedProductModalVisible, setWatchedProductModalVisible] = useState(false)
     const [saveConfirmationVisible, setSaveConfirmationVisible] = useState(false)
     const [guestAuthModalVisible, setGuestAuthModalVisible] = useState(false)
+    const [recallDetailsModalVisible, setRecallDetailsModalVisible] = useState(false)
+
+    const [selectedRecall, setSelectedRecall] = useState<number | null>(null)
 
     const searchDisabled = (
         (productName == '') && (productBrand == '') && (productModel == '') ||
@@ -318,6 +322,16 @@ export default function SearchScreen() {
             >
                 <GuestAuthModal
                     setGuestAuthModalVisible={setGuestAuthModalVisible} />
+            </Modal>
+
+            <Modal
+                visible={recallDetailsModalVisible}
+                transparent={true}
+            >
+                <RecallDetailsModal
+                    setRecallDetailsModalVisible={setRecallDetailsModalVisible} 
+                    recallID={selectedRecall}
+                />
             </Modal>
         </View>
     )
