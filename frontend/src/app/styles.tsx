@@ -131,7 +131,8 @@ export const styles = StyleSheet.create({
         height: 150,
         width: 200,
         marginTop: 20,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        resizeMode: 'contain'
     },
     resultsProductName: {
         color: '#000',
@@ -256,5 +257,28 @@ export const styles = StyleSheet.create({
         textDecorationLine: 'underline',
         fontSize: 20,
         fontWeight: '600'
+    },
+    detailsButton: {
+        backgroundColor: '#eff0f1',
+        justifyContent: 'center',
+        height: 60,
+        width: 180,
+        borderRadius: 40,
+        borderColor: '#474e5a',
+        borderWidth: 2,
+        margin: 10,
+        padding: 10
+    },
+    detailsButtonText: {
+        color: 'black',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
+    detailsImage: {
+        aspectRatio: 4/3,
+        width: '100%',
+        marginTop: 20,
+        resizeMode: 'contain'
     }
 })

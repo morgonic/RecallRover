@@ -123,7 +123,7 @@ export function RecallDetailsModal(props: RecallDetailsModalProps) {
                                             }}
                                         >
                                             <Image
-                                                style={styles.resultsImage}
+                                                style={styles.detailsImage}
                                                 source={{uri: img.URL}}
                                             />
                                             <Text style={styles.detailsText}>

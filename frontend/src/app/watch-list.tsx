@@ -9,6 +9,7 @@ import { GuestAuthModal } from '../../components/GuestAuthModal';
 import { WatchedProductInput, WatchedProductRead } from '../../types/watched-products';
 import { WatchedProductModal } from '../../components/WatchedProductModal';
 import { NavBar } from '../../components/NavBar';
+import { RecallDetailsModal } from '../../components/RecallDetailsModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -22,9 +23,11 @@ export default function WatchListScreen() {
 
     const [guestAuthModalVisible, setGuestAuthModalVisible] = useState(false)
     const [watchedProductModalVisible, setWatchedProductModalVisible] = useState(false)
+    const [recallDetailsModalVisible, setRecallDetailsModalVisible] = useState(false)
 
     const [watchedProducts, setWatchedProducts] = useState<WatchedProductRead[]>([])
     const [productEditing, setProductEditing] = useState<WatchedProductRead>()
+    const [selectedRecall, setSelectedRecall] = useState<number | null>(null)
 
     const statusLabelColor: Record<string, string> = {
         'Watching': '#09861e',
@@ -213,30 +216,46 @@ export default function WatchListScreen() {
                                     {item.product_model}
                                 </Text>
                             </View>
-                            <View style={{
-                                flexDirection: 'row', 
-                                flex: 1,
-                                alignItems: 'flex-end'
-                            }}>
-                                <Pressable
-                                    style={styles.removeButton}
-                                    onPress={() => removeWatchedProduct(item.id)}
-                                >
-                                    <Text style={styles.buttonText}>
-                                        Remove
-                                    </Text>
-                                </Pressable>
-                                <Pressable
-                                    style={styles.editButton}
-                                    onPress={() => {
-                                        setProductEditing(item)
-                                        setWatchedProductModalVisible(true)
-                                    }}
-                                >
-                                    <Text style={styles.buttonText}>
-                                        Edit
-                                    </Text>
-                                </Pressable>
+
+                            <View style={{flexDirection: 'column', flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+                                {item.status_label != 'Watching' && (
+                                    <Pressable 
+                                        style={styles.detailsButton}
+                                        onPress={() => {
+                                            setSelectedRecall(item.recall_id)
+                                            setRecallDetailsModalVisible(true)
+                                        }}
+                                    >
+                                        <Text style={styles.detailsButtonText}>
+                                            View Recall Details
+                                        </Text>
+                                    </Pressable>
+                                )}
+
+
+                                <View style={{
+                                    flexDirection: 'row'
+                                }}>
+                                    <Pressable
+                                        style={styles.removeButton}
+                                        onPress={() => removeWatchedProduct(item.id)}
+                                    >
+                                        <Text style={styles.buttonText}>
+                                            Remove
+                                        </Text>
+                                    </Pressable>
+                                    <Pressable
+                                        style={styles.editButton}
+                                        onPress={() => {
+                                            setProductEditing(item)
+                                            setWatchedProductModalVisible(true)
+                                        }}
+                                    >
+                                        <Text style={styles.buttonText}>
+                                            Edit
+                                        </Text>
+                                    </Pressable>
+                                </View>
                             </View>
                         </View>
                     )} 
@@ -266,7 +285,18 @@ export default function WatchListScreen() {
                     productUPC=''
                 />
             </Modal>
+            
             )}
+
+            <Modal
+                visible={recallDetailsModalVisible}
+                transparent={true}
+            >
+                <RecallDetailsModal
+                    setRecallDetailsModalVisible={setRecallDetailsModalVisible} 
+                    recallID={selectedRecall}
+                />
+            </Modal>
 
         </View>
     )

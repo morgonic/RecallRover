@@ -9,6 +9,7 @@ export type WatchedProductInput = {
 
 export type WatchedProductRead = {
     id: number
+    recall_id: number | null
     status_label: string
     product_name: string | null
     product_brand: string | null
