@@ -9,12 +9,12 @@ import { BrowserMultiFormatReader } from '@zxing/browser'
 interface BarcodeScannerProps {
     cameraStream: MediaStream | null
     onClose: () => void
+    onBarcodeScanned: (upc: string) => void
 }
 
 export function BarcodeScannerModal(props: BarcodeScannerProps) {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [capturedImage, setCapturedImage] = useState<string | null>(null)
-    const [upcToSearch, SetUpcToSearch] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     // function called when image capture button is pressed
@@ -42,8 +42,8 @@ export function BarcodeScannerModal(props: BarcodeScannerProps) {
                 // decode upc
                 const scannedCode = await codeReader.decodeFromImageUrl(image)
                 const codeString = scannedCode.getText()
-                // save upc string to state for use in search endpoint
-                SetUpcToSearch(codeString)
+                // call prop function using decoded upc
+                props.onBarcodeScanned(codeString)
                 // logging for testing
                 console.log(`UPC to search: ${codeString}`)
             }

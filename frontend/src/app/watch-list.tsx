@@ -282,7 +282,7 @@ export default function WatchListScreen() {
                     productName={productEditing.product_name ?? ''}
                     productBrand={productEditing.product_brand ?? ''}
                     productModel={productEditing.product_model ?? ''}
-                    productUPC=''
+                    productUPC={productEditing.product_upc ?? ''}
                 />
             </Modal>
             

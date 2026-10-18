@@ -19,13 +19,14 @@ export function WatchedProductModal(props: WatchedProductModalProps) {
     const [productBrand, setProductBrand] = useState(props.productBrand)
     const [productModel, setProductModel] = useState(props.productModel)
     const [productUPC, setProductUPC] = useState(props.productUPC)
-    
-    const saveDisabled = (props.disabled == true) || (
+
+    const noRequiredFields = (
         (productName == '') &&
         (productBrand == '') &&
-        (productModel == '') &&
-        (productUPC == '')
+        (productModel == '')
     )
+    
+    const saveDisabled = (props.disabled == true) || noRequiredFields
 
     return (
             <View style={styles.modalContainer}>
@@ -33,9 +34,20 @@ export function WatchedProductModal(props: WatchedProductModalProps) {
                     <Text style={styles.title}>
                         Enter product details
                     </Text>
+                    {noRequiredFields && (
+                        <Text style={[styles.smallSubtitleText, {
+                            marginVertical: 0,
+                            color: '#b10000'
+                        }]}>
+                            Enter at least one highlighted field.
+                        </Text>
+                    )}
                     <View style={{flexDirection: 'row'}}>
                         <TextInput
-                            style={styles.textinput}
+                            style={[styles.textinput, {
+                                borderColor: noRequiredFields ? '#b10000' : 'black',
+                                borderWidth: 2
+                            }]}
                             onChangeText={setProductName}
                             value={productName}
                             placeholder='Product Name'
@@ -43,7 +55,9 @@ export function WatchedProductModal(props: WatchedProductModalProps) {
                         />
                         <TextInput
                             style={[styles.textinput, {
-                                width: 200
+                                width: 200,
+                                borderColor: noRequiredFields ? '#b10000' : 'black',
+                                borderWidth: 2
                             }]}
                             onChangeText={setProductBrand}
                             value={productBrand}
@@ -53,7 +67,10 @@ export function WatchedProductModal(props: WatchedProductModalProps) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <TextInput
-                            style={styles.textinput}
+                            style={[styles.textinput, {
+                                borderColor: noRequiredFields ? '#b10000' : 'black',
+                                borderWidth: 2
+                            }]}
                             onChangeText={setProductModel}
                             value={productModel}
                             placeholder='Model Number'

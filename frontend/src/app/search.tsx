@@ -30,6 +30,7 @@ export default function SearchScreen() {
     const [productName, setProductName] = useState('')
     const [productBrand, setProductBrand] = useState('')
     const [productModel, setProductModel] = useState('')
+    const [productUpc, setProductUpc] = useState('')
 
     const [results, setResults] = useState<RecallSummary[]>([])
     const [error, setError] = useState<string | null>(null)
@@ -96,6 +97,42 @@ export default function SearchScreen() {
         finally {
             setLoading(false)
         }
+    }
+
+    async function onSearchByUPC(upc: string) {
+        // close the barcode scanner modal and camera first
+        onCloseBarcodeScanner()
+        // start loading
+        setLoading(true)
+        // reset other states
+        setError(null)
+        setResults([])
+        setHasSearched(false)
+
+        // call upc search endpoint
+        try {
+            const response = await fetch(`${API_URL}/recalls/search/${upc}`)
+
+            const json = await response.json()
+
+            if (!response.ok) {
+                setError((json.detail).toString())
+            }
+            else {
+                setResults(json)
+                setHasSearched(true)
+                setProductUpc(upc)
+            }
+        }
+        catch (e: any) {
+            console.error(e.message)
+            setError(e.message)
+        }
+        finally {
+            // stop loading
+            setLoading(false)
+        }
+
     }
 
     async function onSaveWatchedProduct(product: WatchedProductInput) {
@@ -371,7 +408,7 @@ export default function SearchScreen() {
                     productName={productName}
                     productBrand={productBrand}
                     productModel={productModel}
-                    productUPC=''
+                    productUPC={productUpc}
                 />
             </Modal>
 
@@ -409,6 +446,7 @@ export default function SearchScreen() {
                 <BarcodeScannerModal
                     cameraStream={cameraStream}
                     onClose={onCloseBarcodeScanner}
+                    onBarcodeScanned={onSearchByUPC}
                 />
             </Modal>
         </View>
