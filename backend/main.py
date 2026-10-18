@@ -16,6 +16,7 @@ from cpsc_client import search_recalls
 from recall_helpers import build_recall_summary, build_recall, build_recall_details
 from scheduler import start_scheduler, stop_scheduler
 from daily_check import run_daily_check
+from normalizers import normalize_upc
 from dotenv import load_dotenv
 import os
 import logging
@@ -209,6 +210,41 @@ async def search_cpsc_recalls(
         summaries.append(summary)
     # return list of summaries
     return summaries
+
+# search by upc endpoint
+@app.get('/recalls/search/{upc}', response_model=list[RecallSummary], tags=['recalls'])
+async def search_by_upc(
+    upc: str,
+    session: AsyncSession = Depends(get_async_session)
+):
+    # get recalls from db
+    sql_statement = select(Recall).options(selectinload(Recall.products))
+    recalls = await session.execute(sql_statement)
+    recalls = recalls.scalars().all()
+
+    # initialize empty list for recalls
+    recalls_list = []
+
+    # normalize input upc
+    normal_scanned_upc = normalize_upc(upc)
+
+    # loop through recalls and their product_upcs to compare
+    for recall in recalls:
+        for product_upc in recall.product_upcs or []:
+            # normalize product upc
+            normal_product_upc = normalize_upc(product_upc['UPC'])
+            # check if each product_upc matches the input upc
+            if (normal_product_upc == normal_scanned_upc):
+                # build RecallDetails and RecallSummary
+                details = build_recall_details(recall)
+                summary = build_recall_summary(details)
+                # add RecallSummary to list
+                recalls_list.append(summary)
+                break
+    
+    # return list of RecallSummary objects
+    return recalls_list
+
 
 # get recall details by recall_id endpoint
 @app.get('/recalls/{recall_id}', response_model=RecallDetails, tags=['recalls'])
