@@ -12,7 +12,7 @@ import { SaveConfirmationModal } from '../../components/SaveConfirmationModal';
 import { NavBar } from '../../components/NavBar';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
 import { RecallDetailsModal } from '../../components/RecallDetailsModal';
-import { BarcodeScannerModal } from '../../components/BarcodeScanner';
+import { BarcodeScannerModal } from '../../components/BarcodeScannerModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
