@@ -12,6 +12,7 @@ import { SaveConfirmationModal } from '../../components/SaveConfirmationModal';
 import { NavBar } from '../../components/NavBar';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
 import { RecallDetailsModal } from '../../components/RecallDetailsModal';
+import { BarcodeScannerModal } from '../../components/BarcodeScanner';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -44,6 +45,10 @@ export default function SearchScreen() {
 
     const [selectedRecall, setSelectedRecall] = useState<number | null>(null)
 
+    const [cameraAccessMessage, setCameraAccessMessage] = useState<string | null>(null)
+    const [cameraStream, setCameraStream] = useState<MediaStream | null>(null)
+    const [barcodeScannerVisible, setBarcodeScannerVisible] = useState(false)
+
     const searchDisabled = (
         (productName == '') && (productBrand == '') && (productModel == '') ||
         (loading == true)
@@ -52,6 +57,7 @@ export default function SearchScreen() {
     // onPress fucntion for search button
     async function onSearchButton() {
         setHasSearched(false)
+        setCameraAccessMessage(null)
 
         const searchParams = new URLSearchParams()
         if (productName != '') {
@@ -131,6 +137,55 @@ export default function SearchScreen() {
         finally {
             setSaving(false)
         }
+    }
+
+    async function onScanBarcode() {
+        // check for camera support
+        if (navigator.mediaDevices == undefined) {
+            setCameraAccessMessage('Camera not available on this device. Please search manually.')
+            return
+        }
+
+        try {
+            // request the back facing camera
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: {facingMode: 'environment'}
+            })
+            // store the stream
+            setCameraStream(stream)
+            // reset access message
+            setCameraAccessMessage(null)
+            // show the scanner
+            setBarcodeScannerVisible(true)
+        }
+        catch (e: any) {
+            // set NotAllowedError message
+            if (e.name == 'NotAllowedError') {
+                setCameraAccessMessage('Camera access was denied. Please allow access or search manually.')
+            }
+            // set NotFoundError message
+            else if (e.name == 'NotFoundError') {
+                setCameraAccessMessage('Could not find the camera. Please search manually.')
+            }
+            // set generic error message
+            else {
+                setCameraAccessMessage('Failed to access camera. Please search manually.')
+            }
+        }
+    }
+
+    // function to call when closing barcode scanner
+    function onCloseBarcodeScanner() {
+        // get video tracks from camera stream
+        const cameraStreamTracks = cameraStream?.getTracks() ?? []
+        // stop each one to free up resources
+        for (const track of cameraStreamTracks) {
+            track.stop()
+        }
+        // close the modal
+        setBarcodeScannerVisible(false)
+        // set the stream to null
+        setCameraStream(null)
     }
 
     // checking if logged in to swap Log In / Log Out button
@@ -219,11 +274,18 @@ export default function SearchScreen() {
                     style={({pressed}) =>
                         [styles.searchButton,
                         {backgroundColor: pressed ? '#25426e' : '#4175c4'}]}
-                    onPress={() => {}}
+                    onPress={onScanBarcode}
                 >
                     <Ionicons name='barcode-outline' size={40} color='white'/>
                 </Pressable>
             </View>
+
+            {/*camera access message*/}
+            {cameraAccessMessage && (
+                <Text style={{fontSize: 14, color: '#b10000', marginTop: 10}}>
+                    {cameraAccessMessage}
+                </Text>
+            )}
 
             <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
 
@@ -337,6 +399,16 @@ export default function SearchScreen() {
                 <RecallDetailsModal
                     setRecallDetailsModalVisible={setRecallDetailsModalVisible} 
                     recallID={selectedRecall}
+                />
+            </Modal>
+
+            <Modal
+                visible={barcodeScannerVisible}
+                transparent={true}
+            >
+                <BarcodeScannerModal
+                    cameraStream={cameraStream}
+                    onClose={onCloseBarcodeScanner}
                 />
             </Modal>
         </View>

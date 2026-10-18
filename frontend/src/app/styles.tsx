@@ -285,5 +285,18 @@ export const styles = StyleSheet.create({
         alignItems: 'center', 
         marginBottom: 30, 
         marginTop: 10
+    },
+    cameraView: {
+        width: '80%',
+        height: '80%'
+    },
+    captureButton: {
+        backgroundColor: "#4175c4",
+        justifyContent: 'center',
+        height: 80,
+        width: 80,
+        borderRadius: 40,
+        borderColor: '#25426e',
+        borderWidth: 2
     }
 })
