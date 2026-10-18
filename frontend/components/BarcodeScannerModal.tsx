@@ -4,6 +4,7 @@ import { styles } from "@/app/styles"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import { useEffect, useRef, useState } from "react"
 import { Pressable, View, Text, Image } from "react-native"
+import { BrowserMultiFormatReader } from '@zxing/browser'
 
 interface BarcodeScannerProps {
     cameraStream: MediaStream | null
@@ -13,6 +14,8 @@ interface BarcodeScannerProps {
 export function BarcodeScannerModal(props: BarcodeScannerProps) {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [capturedImage, setCapturedImage] = useState<string | null>(null)
+    const [upcToSearch, SetUpcToSearch] = useState<string | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
     // function called when image capture button is pressed
     async function onCaptureBarcodeImage() {
@@ -22,6 +25,8 @@ export function BarcodeScannerModal(props: BarcodeScannerProps) {
         const canvas = document.createElement('canvas')
         // get 2d drawing context
         const context = canvas.getContext('2d')
+        // create barcode reader
+        const codeReader = new BrowserMultiFormatReader()
         // if video and context exist
         if (video && context) {
             // set canvas dimensions with video dimensions
@@ -33,6 +38,20 @@ export function BarcodeScannerModal(props: BarcodeScannerProps) {
             const image = canvas.toDataURL('image/png')
             // save image data url to state
             setCapturedImage(image)
+            try {
+                // decode upc
+                const scannedCode = await codeReader.decodeFromImageUrl(image)
+                const codeString = scannedCode.getText()
+                // save upc string to state for use in search endpoint
+                SetUpcToSearch(codeString)
+                // logging for testing
+                console.log(`UPC to search: ${codeString}`)
+            }
+            catch (e: any) {
+                // set the error and log for testing
+                setError(e.message)
+                console.log(`Error: ${e.message}`)
+            }
         }
     }
 
@@ -59,7 +78,7 @@ export function BarcodeScannerModal(props: BarcodeScannerProps) {
                     Barcode Scan
                 </Text>
                 <Text style={[styles.smallSubtitleText, {textAlign: 'center', marginTop: 0}]}>
-                    Scan a product's barcode to search.
+                    Take a photo of a product's barcode to search.
                 </Text>
                 <View style={{
                     width: '80%', 
@@ -92,7 +111,24 @@ export function BarcodeScannerModal(props: BarcodeScannerProps) {
                             source={{uri: capturedImage}}
                         />
                     )}
+                    
                 </View>
+
+                {error && (
+                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style={{fontSize: 14, color: '#b10000', margin: 10, textAlign: 'center'}}>
+                            Barcode not detected. Please try again or 
+                            <Pressable
+                                onPress={props.onClose}
+                            >
+                                <Text style={[styles.textLink, {
+                                    fontSize: 14,
+                                    marginLeft: 5
+                                }]}>use manual search.</Text>
+                            </Pressable>
+                        </Text>
+                    </View>
+                )}
 
                 <Pressable
                     style={({pressed}) =>
@@ -103,7 +139,10 @@ export function BarcodeScannerModal(props: BarcodeScannerProps) {
                             alignSelf: 'center'
                         }]
                     }
-                    onPress={capturedImage ? () => setCapturedImage(null) : onCaptureBarcodeImage}
+                    onPress={capturedImage ? () => {
+                        setCapturedImage(null)
+                        setError(null)
+                    } : onCaptureBarcodeImage}
                 >
                     <Ionicons 
                         name={capturedImage ? 'camera-reverse-outline' : 'camera-outline'}
