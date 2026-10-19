@@ -1,6 +1,6 @@
 import { Text, View, ActivityIndicator, Modal, FlatList, Pressable, Image } from "react-native";
 import { router } from 'expo-router';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { deleteToken, getGuest, getToken } from "./storage";
 import { styles } from './styles';
 import { NavBar } from "../../components/NavBar";
@@ -30,17 +30,40 @@ export default function Index() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [filteredCategory, setFilteredCategory] = useState<string | null>(null)
 
+  const [startDate, setStartDate] = useState<string | null>(null)
+  const [endDate, setEndDate] = useState<string | null>(null)
+  const [filteredStartDate, setFilteredStartDate] = useState<string | null>(null)
+  const [filteredEndDate, setFilteredEndDate] = useState<string | null>(null)
+  const startDateInput = useRef<HTMLInputElement>(null)
+  const endDateInput = useRef<HTMLInputElement>(null)
+
   const [guestAuthModalVisible, setGuestAuthModalVisible] = useState(false);
   const [recallDetailsModalVisible, setRecallDetailsModalVisible] = useState(false);
 
   // function for formatting the date from iso to localdatestring
   function formatDate(oldDate: string) {
-      let newDate = new Date(oldDate)
-      return newDate.toLocaleDateString()
+    let newDate = new Date(oldDate)
+    return newDate.toLocaleDateString()
+  }
+
+  // function for formatting start/end date strings
+  function formatFilterDate(filterDate: string) {
+    // split up by -
+    const dateParts = filterDate.split('-')
+    // put split up parts in array
+    const [year, month, day] = dateParts
+    // format as month/day/year
+    const formattedDate = `${month}/${day}/${year}`
+    return formattedDate
   }
 
   // function to load the recall feed using offset
-  const loadFeed = async (offset: number, category_id: string | null) => {
+  const loadFeed = async (
+    offset: number, 
+    category_id: string | null, 
+    start_date: string | null, 
+    end_date: string | null
+  ) => {
     setError(null)
 
     // if the offset is the default 0, loadingFeed is true, db hasMore recalls to load
@@ -64,6 +87,14 @@ export default function Index() {
         // append category_id if applied
         if (category_id != null) {
           searchParams.append('category_id', category_id)
+        }
+        // append start_date if applied
+        if (start_date != null) {
+          searchParams.append('start_date', start_date)
+        }
+        // append end_date if applied
+        if (end_date != null) {
+          searchParams.append('end_date', end_date)
         }
         // call fetch with all params
         const response = await fetch(`${fetchUrl}?${searchParams.toString()}`)
@@ -104,14 +135,20 @@ export default function Index() {
   // function to call for Apply Filters button
   const applyFilters = async () => {
     setFilteredCategory(selectedCategory)
-    loadFeed(0, selectedCategory)
+    setFilteredStartDate(startDate)
+    setFilteredEndDate(endDate)
+    loadFeed(0, selectedCategory, startDate, endDate)
   }
 
   // function to call for Clear Filters button
   const clearFilters = async () => {
     setFilteredCategory(null)
     setSelectedCategory(null)
-    loadFeed(0, null)
+    setStartDate(null)
+    setFilteredStartDate(null)
+    setEndDate(null)
+    setFilteredEndDate(null)
+    loadFeed(0, null, null, null)
   }
 
   // load categories from db
@@ -180,7 +217,7 @@ export default function Index() {
   }, [])
 
   useEffect(() => {
-    loadFeed(0, null)
+    loadFeed(0, null, null, null)
   }, [])
 
 
@@ -220,36 +257,64 @@ export default function Index() {
           />
 
           {/*date range start date filter*/}
-          <Pressable
-            style={styles.filterButton}
-            onPress={() => {}}
-          >
-            <Text style={styles.filterButtonText}>
-              Start Date
-              <Ionicons 
-                name='filter'
-                size={20} 
-                style={{alignSelf: 'center', marginLeft: 10}}
-                color='white'
-              />
-            </Text>
-          </Pressable>
+          <View style={{position: 'relative'}}>
+            <Pressable
+              style={styles.filterButton}
+              onPress={() => startDateInput.current?.showPicker()}
+            >
+              <Text style={styles.filterButtonText}>
+                {startDate ? formatFilterDate(startDate) : 'Start Date'}
+                <Ionicons 
+                  name='filter'
+                  size={20} 
+                  style={{alignSelf: 'center', marginLeft: 10}}
+                  color='white'
+                />
+              </Text>
+            </Pressable>
+            <input
+              type='date'
+              ref={startDateInput}
+              value={startDate ?? ''}
+              onChange={(e) => setStartDate(e.target.value || null)}
+              style={{
+                opacity: 0,
+                position: 'absolute',
+                pointerEvents: 'none'
+              }}
+              max={endDate ?? ''}
+            />
+          </View>
 
           {/*date range end date filter*/}
-          <Pressable
-            style={styles.filterButton}
-            onPress={() => {}}
-          >
-            <Text style={styles.filterButtonText}>
-              End Date
-              <Ionicons 
-                name='filter'
-                size={20} 
-                style={{alignSelf: 'center', marginLeft: 10}}
-                color='white'
-              />
-            </Text>
-          </Pressable>
+          <View style={{position: 'relative'}}>
+            <Pressable
+              style={styles.filterButton}
+              onPress={() => endDateInput.current?.showPicker()}
+            >
+              <Text style={styles.filterButtonText}>
+                {endDate ? formatFilterDate(endDate) : 'End Date'}
+                <Ionicons 
+                  name='filter'
+                  size={20} 
+                  style={{alignSelf: 'center', marginLeft: 10}}
+                  color='white'
+                />
+              </Text>
+            </Pressable>
+            <input
+              type='date'
+              ref={endDateInput}
+              value={endDate ?? ''}
+              onChange={(e) => setEndDate(e.target.value || null)}
+              style={{
+                opacity: 0, 
+                position: 'absolute', 
+                pointerEvents: 'none'
+              }}
+              min={startDate ?? ''}
+            />
+          </View>
 
           <Pressable
             style={styles.applyFilterButton}
@@ -279,9 +344,16 @@ export default function Index() {
             {error}
           </Text>
         ) : (recalls.length == 0) ? (
+          <>
           <Text style={styles.subtitleText}>
-            No recalls yet.
+            No recalls found.
           </Text>
+          {(filteredCategory || filteredStartDate || filteredEndDate) && (
+            <Text style={styles.subtitleText}>
+              Please clear the filters.
+            </Text>
+          )}
+          </>
         ) : (
           <FlatList
             data={recalls}
@@ -336,7 +408,7 @@ export default function Index() {
                 ) : hasMore ? (
                   <Pressable
                     style={styles.detailsButton}
-                    onPress={() => loadFeed(recalls.length, filteredCategory)}
+                    onPress={() => loadFeed(recalls.length, filteredCategory, filteredStartDate, filteredEndDate)}
                     disabled={loadingMore}
                   >
                     <Text style={styles.detailsButtonText}>
