@@ -61,6 +61,11 @@ class RecallSummary(BaseModel):
     ProductName: str | None = None
     Hazard: str | None = None
 
+# schema for category_id linked to product_type
+class Category(BaseModel):
+    category_id: str | None = None
+    product_type: str | None = None
+
 ### Watched Product schemas ###
 
 # schema for creating watched product in frontend request body

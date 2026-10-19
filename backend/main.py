@@ -9,7 +9,8 @@ from sqlalchemy.orm import selectinload
 from schemas import (
     UserRead, UserCreate, UserUpdate, 
     RecallDetails, RecallSummary, RecallProductDetails,
-    WatchedProductRead, WatchedProductCreate
+    WatchedProductRead, WatchedProductCreate,
+    Category
 )
 from users import auth_backend, current_active_user, fastapi_users
 from cpsc_client import search_recalls
@@ -163,7 +164,38 @@ async def get_recall_feed(
         recall_summaries.append(summary)
 
     return recall_summaries
-    
+
+# recall feed categories endpoint
+@app.get('/recalls/feed/categories', response_model=list[Category], tags=['recalls'])
+async def get_recall_feed_categories(
+    session: AsyncSession = Depends(get_async_session)
+):
+    # get unique category_id/product_type pairs in alphabetical order
+    # only if category_id is not None or empty string
+    sql_statement = (
+        select(RecallProduct.category_id, RecallProduct.product_type)
+        .where(and_(
+            RecallProduct.category_id != None, 
+            RecallProduct.category_id != '',
+            RecallProduct.product_type != None,
+            RecallProduct.product_type != ''
+        ))
+        .distinct()
+        .order_by(RecallProduct.product_type)
+    )
+    categories = await session.execute(sql_statement)
+    categories = categories.all()
+
+    # initialize empty list for category/type pairs
+    category_types = []
+
+    # loop through pairs, build Category model, append to list
+    for category in categories:
+        pair = Category(category_id=category.category_id, product_type=category.product_type)
+        category_types.append(pair)
+
+    # return all id/type pairs
+    return category_types
 
 
 # search endpoint
