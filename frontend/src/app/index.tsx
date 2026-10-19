@@ -139,6 +139,17 @@ export default function Index() {
         <NavBar loggedIn={loggedIn} onGuestWatchList={() => setGuestAuthModalVisible(true)} />
         <Text style={styles.title}>Recall Feed</Text>
         <View style={{height: 14}}/>
+
+        <Pressable>
+          {/*category filter*/}
+        </Pressable>
+        <Pressable>
+          {/*date range start date filter*/}
+        </Pressable>
+        <Pressable>
+          {/*date range end date filter*/}
+        </Pressable>
+
         <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
         
         {loadingFeed ? (
