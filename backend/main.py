@@ -123,7 +123,10 @@ async def run_manual_daily_check(user: User = Depends(current_active_user)):
 async def get_recall_feed(
     session: AsyncSession = Depends(get_async_session),
     limit: int = 20, 
-    offset: int = 0
+    offset: int = 0,
+    category_id: int | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None
 ):
     # get limited recalls (default 20) from the db
     # descend by date and then recallID (for recalls on same date)
@@ -137,6 +140,14 @@ async def get_recall_feed(
         .offset(offset)
         .options(selectinload(Recall.products))
     )
+    # search by filters if filter is not none
+    if (category_id != None):
+        sql_statement = sql_statement.where(Recall.category_id == category_id)
+    if (start_date != None):
+        sql_statement = sql_statement.where(Recall.recall_date >= start_date)
+    if (end_date != None):
+        sql_statement = sql_statement.where(Recall.recall_date <= start_date)
+        
     recalls = await session.execute(sql_statement)
     recalls = recalls.scalars().all()
 
