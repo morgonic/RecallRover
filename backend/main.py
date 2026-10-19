@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from database import create_db_and_tables, User, get_async_session, WatchedProduct, Recall
+from database import create_db_and_tables, User, get_async_session, WatchedProduct, Recall, RecallProduct
 from contextlib import asynccontextmanager
 from sqlalchemy import select, and_
 from sqlalchemy.orm import selectinload
@@ -142,7 +142,7 @@ async def get_recall_feed(
     )
     # search by filters if filter is not none
     if (category_id != None):
-        sql_statement = sql_statement.where(Recall.category_id == category_id)
+        sql_statement = sql_statement.where(Recall.products.any(RecallProduct.category_id == category_id))
     if (start_date != None):
         sql_statement = sql_statement.where(Recall.recall_date >= start_date)
     if (end_date != None):
