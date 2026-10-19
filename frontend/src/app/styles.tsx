@@ -298,5 +298,22 @@ export const styles = StyleSheet.create({
         borderRadius: 40,
         borderColor: '#25426e',
         borderWidth: 2
+    },
+    filterButton: {
+        backgroundColor: '#474e5a',
+        justifyContent: 'center',
+        height: 50,
+        width: 150,
+        borderRadius: 40,
+        borderColor: '#1e2125',
+        borderWidth: 2,
+        margin: 5,
+        padding: 10
+    },
+    filterButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center'
     }
 })

@@ -7,6 +7,7 @@ import { NavBar } from "../../components/NavBar";
 import { GuestAuthModal } from "../../components/GuestAuthModal";
 import { RecallSummary } from "../../types/recall";
 import { RecallDetailsModal } from "../../components/RecallDetailsModal";
+import Ionicons from "@react-native-vector-icons/ionicons";
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -140,15 +141,56 @@ export default function Index() {
         <Text style={styles.title}>Recall Feed</Text>
         <View style={{height: 14}}/>
 
-        <Pressable>
+        <View style={{flexDirection: 'row'}}>
           {/*category filter*/}
-        </Pressable>
-        <Pressable>
+          <Pressable
+            style={styles.filterButton}
+            onPress={() => {}}
+          >
+            
+            <Text style={styles.filterButtonText}>
+              Category
+              <Ionicons 
+                name='filter'
+                size={20} 
+                style={{alignSelf: 'center', marginLeft: 10}}
+                color='white'
+              />
+            </Text>
+          </Pressable>
+
           {/*date range start date filter*/}
-        </Pressable>
-        <Pressable>
+          <Pressable
+            style={styles.filterButton}
+            onPress={() => {}}
+          >
+            <Text style={styles.filterButtonText}>
+              Start Date
+              <Ionicons 
+                name='filter'
+                size={20} 
+                style={{alignSelf: 'center', marginLeft: 10}}
+                color='white'
+              />
+            </Text>
+          </Pressable>
+
           {/*date range end date filter*/}
-        </Pressable>
+          <Pressable
+            style={styles.filterButton}
+            onPress={() => {}}
+          >
+            <Text style={styles.filterButtonText}>
+              End Date
+              <Ionicons 
+                name='filter'
+                size={20} 
+                style={{alignSelf: 'center', marginLeft: 10}}
+                color='white'
+              />
+            </Text>
+          </Pressable>
+        </View>
 
         <View style={{height: 2, width: '80%', backgroundColor: 'black', marginVertical: 14}}/>
         
