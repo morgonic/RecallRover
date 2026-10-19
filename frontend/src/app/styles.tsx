@@ -315,5 +315,16 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center'
+    },
+    applyFilterButton: {
+        backgroundColor: '#eff0f1',
+        justifyContent: 'center',
+        height: 50,
+        width: 150,
+        borderRadius: 40,
+        borderColor: '#474e5a',
+        borderWidth: 2,
+        margin: 5,
+        padding: 10
     }
 })

@@ -39,3 +39,8 @@ export type RecallDetails = {
     Importers: Record<string, any>[] | null
     Distributors: Record<string, any>[] | null
 }
+
+export type Category = {
+    category_id: string
+    product_type: string
+}

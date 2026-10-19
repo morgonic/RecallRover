@@ -8,6 +8,8 @@ import { GuestAuthModal } from "../../components/GuestAuthModal";
 import { RecallSummary } from "../../types/recall";
 import { RecallDetailsModal } from "../../components/RecallDetailsModal";
 import Ionicons from "@react-native-vector-icons/ionicons";
+import { Dropdown } from 'react-native-element-dropdown'
+import { Category } from '../../types/recall'
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -24,6 +26,10 @@ export default function Index() {
   const [recalls, setRecalls] = useState<RecallSummary[]>([])
   const [selectedRecall, setSelectedRecall] = useState<number | null>(null)
 
+  const [categories, setCategories] = useState<Category[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [filteredCategory, setFilteredCategory] = useState<string | null>(null)
+
   const [guestAuthModalVisible, setGuestAuthModalVisible] = useState(false);
   const [recallDetailsModalVisible, setRecallDetailsModalVisible] = useState(false);
 
@@ -34,21 +40,33 @@ export default function Index() {
   }
 
   // function to load the recall feed using offset
-  const loadFeed = async (offset: number) => {
+  const loadFeed = async (offset: number, category_id: string | null) => {
     setError(null)
 
-    // if the offset is the default 0, loadingFeed is true
+    // if the offset is the default 0, loadingFeed is true, db hasMore recalls to load
     if (offset == 0) {
       setLoadingFeed(true)
+      setHasMore(true)
     }
     // if not, it is loadingMore
     else {
       setLoadingMore(true)
     }
     
-    // call the GET endpoint for recall feed using offset
+    // call the GET endpoint for recall feed using offset and filters
     try {
-        const response = await fetch(`${API_URL}/recalls/feed?offset=${offset}`)
+        //base url
+        const fetchUrl = `${API_URL}/recalls/feed`
+        // use URLSearchParams to build endpoint params
+        const searchParams = new URLSearchParams()
+        // always use offset
+        searchParams.append('offset', offset.toString())
+        // append category_id if applied
+        if (category_id != null) {
+          searchParams.append('category_id', category_id)
+        }
+        // call fetch with all params
+        const response = await fetch(`${fetchUrl}?${searchParams.toString()}`)
 
         // set error if bad response
         if (!response.ok) {
@@ -83,6 +101,42 @@ export default function Index() {
       }
   }
 
+  // function to call for Apply Filters button
+  const applyFilters = async () => {
+    setFilteredCategory(selectedCategory)
+    loadFeed(0, selectedCategory)
+  }
+
+  // function to call for Clear Filters button
+  const clearFilters = async () => {
+    setFilteredCategory(null)
+    setSelectedCategory(null)
+    loadFeed(0, null)
+  }
+
+  // load categories from db
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await fetch(`${API_URL}/recalls/feed/categories`)
+
+        if (!response.ok) {
+          console.log('Could not fetch categories from DB.')
+        }
+        else {
+          const json = await response.json()
+          setCategories(json)
+        }
+      }
+      catch (e: any) {
+        console.error(e.message)
+      }
+    }
+
+    loadCategories()
+  }, [])
+
+  // check user auth
   useEffect(() => {
     const checkAuth = async () => {
       const token = await getToken();
@@ -126,7 +180,7 @@ export default function Index() {
   }, [])
 
   useEffect(() => {
-    loadFeed(0)
+    loadFeed(0, null)
   }, [])
 
 
@@ -143,21 +197,27 @@ export default function Index() {
 
         <View style={{flexDirection: 'row'}}>
           {/*category filter*/}
-          <Pressable
+          <Dropdown
             style={styles.filterButton}
-            onPress={() => {}}
-          >
-            
-            <Text style={styles.filterButtonText}>
-              Category
+            autoScroll={false}
+            labelField='product_type'
+            valueField='category_id'
+            data={categories}
+            value={selectedCategory}
+            onChange={(item) => setSelectedCategory(item.category_id)}
+            placeholder='Category'
+            placeholderStyle={styles.filterButtonText}
+            selectedTextStyle={styles.filterButtonText}
+            selectedTextProps={{numberOfLines: 1}}
+            renderRightIcon={() => (
               <Ionicons 
                 name='filter'
                 size={20} 
                 style={{alignSelf: 'center', marginLeft: 10}}
                 color='white'
               />
-            </Text>
-          </Pressable>
+            )}
+          />
 
           {/*date range start date filter*/}
           <Pressable
@@ -188,6 +248,24 @@ export default function Index() {
                 style={{alignSelf: 'center', marginLeft: 10}}
                 color='white'
               />
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.applyFilterButton}
+            onPress={applyFilters}
+          >
+            <Text style={styles.detailsButtonText}>
+              Apply Filters
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.applyFilterButton}
+            onPress={clearFilters}
+          >
+            <Text style={styles.detailsButtonText}>
+              Clear Filters
             </Text>
           </Pressable>
         </View>
@@ -258,9 +336,7 @@ export default function Index() {
                 ) : hasMore ? (
                   <Pressable
                     style={styles.detailsButton}
-                    onPress={() => {
-                      loadFeed(recalls.length)
-                    }}
+                    onPress={() => loadFeed(recalls.length, filteredCategory)}
                     disabled={loadingMore}
                   >
                     <Text style={styles.detailsButtonText}>
