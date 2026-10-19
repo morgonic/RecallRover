@@ -146,8 +146,8 @@ async def get_recall_feed(
     if (start_date != None):
         sql_statement = sql_statement.where(Recall.recall_date >= start_date)
     if (end_date != None):
-        sql_statement = sql_statement.where(Recall.recall_date <= start_date)
-        
+        sql_statement = sql_statement.where(Recall.recall_date <= end_date)
+
     recalls = await session.execute(sql_statement)
     recalls = recalls.scalars().all()
 
