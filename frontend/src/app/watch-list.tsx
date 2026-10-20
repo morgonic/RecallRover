@@ -1,8 +1,7 @@
 // Watch List screen
 
-import { Text, View, Modal, ActivityIndicator, FlatList, Pressable, useWindowDimensions } from 'react-native';
+import { Text, View, Modal, ActivityIndicator, FlatList, Pressable } from 'react-native';
 import { styles } from './styles';
-import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken, setGuest } from './storage';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
@@ -10,6 +9,7 @@ import { WatchedProductInput, WatchedProductRead } from '../../types/watched-pro
 import { WatchedProductModal } from '../../components/WatchedProductModal';
 import { NavBar } from '../../components/NavBar';
 import { RecallDetailsModal } from '../../components/RecallDetailsModal';
+import { FlatListColumns } from '../../components/FlatListColumns';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -18,17 +18,8 @@ export default function WatchListScreen() {
     
     const [checkingAuth, setCheckingAuth] = useState(false)
     const [loggedIn, setLoggedIn] = useState(false)
-
-    const windowWidth = useWindowDimensions().width
     
-    // change flatlist numcolumns based on window width (cards are 300 width)
-    const numberOfColumns = (
-        (windowWidth <= 900) ? 2 :
-        (windowWidth <= 1200) ? 3 : 
-        (windowWidth <= 1500) ? 4 : 
-        (windowWidth <= 1800) ? 5 : 
-        6
-    )
+    const numberOfColumns = FlatListColumns()
 
     const [error, setError] = useState<string | null>(null)
 

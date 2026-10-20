@@ -1,4 +1,4 @@
-import { Text, View, ActivityIndicator, Modal, FlatList, Pressable, Image, useWindowDimensions } from "react-native";
+import { Text, View, ActivityIndicator, Modal, FlatList, Pressable, Image } from "react-native";
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from "react";
 import { deleteToken, getGuest, getToken } from "./storage";
@@ -10,6 +10,7 @@ import { RecallDetailsModal } from "../../components/RecallDetailsModal";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { Dropdown } from 'react-native-element-dropdown'
 import { Category } from '../../types/recall'
+import { FlatListColumns } from "../../components/FlatListColumns";
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -18,16 +19,7 @@ export default function Index() {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const windowWidth = useWindowDimensions().width
-  
-  // change flatlist numcolumns based on window width (cards are 300 width)
-  const numberOfColumns = (
-      (windowWidth <= 900) ? 2 :
-      (windowWidth <= 1200) ? 3 : 
-      (windowWidth <= 1500) ? 4 : 
-      (windowWidth <= 1800) ? 5 : 
-      6
-  )
+  const numberOfColumns = FlatListColumns()
 
   const [loadingFeed, setLoadingFeed] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);

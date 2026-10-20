@@ -1,6 +1,6 @@
 // Search screen
 
-import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal, useWindowDimensions } from 'react-native';
+import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal } from 'react-native';
 import { styles } from './styles';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken } from "./storage";
@@ -13,6 +13,7 @@ import { NavBar } from '../../components/NavBar';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
 import { RecallDetailsModal } from '../../components/RecallDetailsModal';
 import { BarcodeScannerModal } from '../../components/BarcodeScannerModal';
+import { FlatListColumns } from '../../components/FlatListColumns';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -27,16 +28,7 @@ export default function SearchScreen() {
     const [checkingAuth, setCheckingAuth] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
 
-    const windowWidth = useWindowDimensions().width
-
-    // change flatlist numcolumns based on window width (cards are 300 width)
-    const numberOfColumns = (
-        (windowWidth <= 900) ? 2 :
-        (windowWidth <= 1200) ? 3 : 
-        (windowWidth <= 1500) ? 4 : 
-        (windowWidth <= 1800) ? 5 : 
-        6
-    )
+    const numberOfColumns = FlatListColumns()
 
     const [productName, setProductName] = useState('')
     const [productBrand, setProductBrand] = useState('')
