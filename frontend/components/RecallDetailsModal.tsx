@@ -147,10 +147,6 @@ export function RecallDetailsModal(props: RecallDetailsModalProps) {
                                 details={productsWithModels?.map((i) => i.Model)}                                
                             />
                             <RecallDetailsSection 
-                                heading='Barcode Numbers' 
-                                details={recall.ProductUPCs?.map((i) => i.UPC)}                                
-                            />
-                            <RecallDetailsSection 
                                 heading='Hazards' 
                                 details={recall.Hazards?.map((i) => i.Name)}                                
                             />
@@ -185,6 +181,10 @@ export function RecallDetailsModal(props: RecallDetailsModalProps) {
                             <RecallDetailsSection 
                                 heading='Distributors' 
                                 details={recall.Distributors?.map((i) => i.Name)}                                
+                            />
+                            <RecallDetailsSection 
+                                heading='Barcode Numbers' 
+                                details={recall.ProductUPCs?.map((i) => i.UPC)}                                
                             />
                             {recall.URL && (
                                 <Pressable
