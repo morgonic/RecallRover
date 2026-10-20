@@ -404,7 +404,7 @@ export default function Index() {
                   >
                       {item.Hazard}
                   </Text>
-                  <Text style={[styles.smallSubtitleText, {textAlign: 'center', backgroundColor: '#f0f3f7', borderRadius: 20}]}>
+                  <Text style={styles.viewMoreText}>
                       Click to view more details.
                   </Text>
               </Pressable>
