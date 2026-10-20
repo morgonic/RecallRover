@@ -5,6 +5,7 @@ import Ionicons from "@react-native-vector-icons/ionicons"
 import { useEffect, useRef, useState } from "react"
 import { Pressable, View, Text, Image } from "react-native"
 import { BrowserMultiFormatReader } from '@zxing/browser'
+import { DecodeHintType } from '@zxing/library'
 
 interface BarcodeScannerProps {
     cameraStream: MediaStream | null
@@ -25,8 +26,12 @@ export function BarcodeScannerModal(props: BarcodeScannerProps) {
         const canvas = document.createElement('canvas')
         // get 2d drawing context
         const context = canvas.getContext('2d')
+        // hints for BrowserMultiFormatReader
+        const hints = new Map()
+        // add TRY_HARDER decode hint to make it inspect deeper for barcode
+        hints.set(DecodeHintType.TRY_HARDER, true)
         // create barcode reader
-        const codeReader = new BrowserMultiFormatReader()
+        const codeReader = new BrowserMultiFormatReader(hints)
         // if video and context exist
         if (video && context) {
             // set canvas dimensions with video dimensions
