@@ -1,12 +1,13 @@
 // Log In screen
 
-import { Text, View, TextInput, Pressable } from 'react-native';
+import { Text, View, TextInput, Pressable, Modal } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { router } from 'expo-router';
 import { deleteGuest, setGuest, setToken } from '@/app/storage';
 import validator from 'validator';
 import { styles } from './styles';
+import { ForgotPasswordModal } from '../../components/ForgotPasswordModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -19,6 +20,8 @@ export default function LoginScreen() {
     const canLogIn = (email.trim() != '' && password != '')
     const [invalidEmail, setInvalidEmail] = useState(false)
     const [loginError, setLoginError] = useState('')
+
+    const [forgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false)
 
 
     {/*function called when log in button pressed*/}
@@ -148,7 +151,7 @@ export default function LoginScreen() {
                 </View>
                 <View style={{alignSelf: 'flex-end', marginRight: 40}}>
                     <Pressable
-                        onPress={() => {}}
+                        onPress={() => setForgotPasswordModalVisible(true)}
                     >
                         <Text style={styles.forgotPass}>
                             Forgot Password?
@@ -166,6 +169,15 @@ export default function LoginScreen() {
                     </Text>
                 </Pressable>
             </View>
+
+            <Modal
+                visible={forgotPasswordModalVisible}
+                transparent={true}
+            >
+                <ForgotPasswordModal
+                    setForgotPasswordModalVisible={setForgotPasswordModalVisible}
+                />
+            </Modal>
         </View>
     )
 }
