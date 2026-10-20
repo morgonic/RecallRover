@@ -334,5 +334,14 @@ export const styles = StyleSheet.create({
         borderWidth: 2,
         margin: 5,
         padding: 10
+    },
+    viewMoreText: {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: '600',
+        textAlign: 'center', 
+        backgroundColor: '#f0f3f7', 
+        borderRadius: 20,
+        marginTop: 10
     }
 })
