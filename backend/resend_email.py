@@ -48,6 +48,7 @@ def send_email_alert(
             <p>This product will be labeled <strong>{status_label}</strong> in your <a href='https://recall-rover.com/watch-list'><strong>Watch List</strong></a>.</p>
             {image}
             <h3>Thank you,<br>RecallRover</h3>
+            <img src='https://imglink.cc/cdn/_CYxcnEjcU.png' alt="RecallRover Logo">
         """
     }
     # send email
@@ -80,6 +81,7 @@ def send_reset_password_email(email: str, token: str):
             <p>If you did not request a password reset, ignore this email.</p>
             <p><a href='{reset_link}'><strong>Reset Password Link</strong></a></p>
             <h3>Thank you,<br>RecallRover</h3>
+            <img src='https://imglink.cc/cdn/_CYxcnEjcU.png' alt="RecallRover Logo" width='193' height='200'>
         """
     }
     # send email
