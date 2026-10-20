@@ -38,6 +38,7 @@ export default function WatchListScreen() {
     }
 
     async function getWatchedProducts(authToken: string) {
+        setError(null)
         try {
             const response = await fetch(`${API_URL}/watched-products`, {
                 headers: {'Authorization': `Bearer ${authToken}`}
@@ -59,6 +60,7 @@ export default function WatchListScreen() {
     }
 
     async function removeWatchedProduct(product_id: number) {
+        setError(null)
         const authToken = await getToken()
         if (authToken) {
             try {
@@ -88,6 +90,7 @@ export default function WatchListScreen() {
     }
 
     async function editWatchedProduct(product_id: number, edits: WatchedProductInput) {
+        setError(null)
         const authToken = await getToken()
         if (authToken) {
             try {
@@ -119,6 +122,7 @@ export default function WatchListScreen() {
 
     useEffect(() => {
         const checkAuth = async () => {
+            setError(null)
             const token = await getToken();
             if (token) {
                 try {
@@ -128,6 +132,8 @@ export default function WatchListScreen() {
                     })
                     if (!response.ok) {
                         await deleteToken();
+                        const json = await response.json()
+                        setError(json.detail.toString())
                         setLoggedIn(false);
                         setGuestAuthModalVisible(true);
                     }
@@ -145,19 +151,19 @@ export default function WatchListScreen() {
                 }
             }
             else {
-            console.log("No access token, checking if guest.")
-            const isGuest = await getGuest();
-            if (!isGuest) {
-                console.log("Not a guest.")
-                setLoggedIn(false)
-                setGuestAuthModalVisible(true)
-            }
-            else {
-                setCheckingAuth(false)
-                console.log("Guest cannot have access to Watch List.")
-                setLoggedIn(false)
-                setGuestAuthModalVisible(true)
-            }
+                console.log("No access token, checking if guest.")
+                const isGuest = await getGuest();
+                if (!isGuest) {
+                    console.log("Not a guest.")
+                    setLoggedIn(false)
+                    setGuestAuthModalVisible(true)
+                }
+                else {
+                    setCheckingAuth(false)
+                    console.log("Guest cannot have access to Watch List.")
+                    setLoggedIn(false)
+                    setGuestAuthModalVisible(true)
+                }
             }
         }
     
@@ -176,6 +182,8 @@ export default function WatchListScreen() {
 
             {(checkingAuth && !loggedIn) ? (
                 <ActivityIndicator size='large'/>
+            ) : (error) ? (
+                <Text style={styles.subtitleText}>{error}</Text>
             ) : (watchedProducts.length == 0) ? (
                 <>
                 <Text style={styles.subtitleText}>You are not watching any products.</Text>
