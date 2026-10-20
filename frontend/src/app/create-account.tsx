@@ -1,6 +1,6 @@
 // Create Account screen
 
-import { Text, View, TextInput, Pressable } from 'react-native';
+import { Text, View, TextInput, Pressable, Image } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { router } from 'expo-router';
@@ -154,6 +154,15 @@ export default function CreateAccountScreen() {
 
     return (
         <View style={styles.authContainer}>
+            <Image
+                source={require('@/assets/images/logo.png')}
+                style={{
+                    width: 180, 
+                    height: 180,
+                    alignSelf: 'center',
+                    resizeMode: 'contain'
+                }}
+            />
             <Text style={styles.title}>RecallRover</Text>
             <Text style={styles.subtitleText}>Create an account to start watching products and receive alerts!</Text>
                 <View style={{alignItems: 'flex-start', marginLeft: 30}}>

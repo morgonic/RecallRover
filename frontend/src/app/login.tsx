@@ -1,6 +1,6 @@
 // Log In screen
 
-import { Text, View, TextInput, Pressable, Modal } from 'react-native';
+import { Text, View, TextInput, Pressable, Modal, Image } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { router } from 'expo-router';
@@ -80,6 +80,15 @@ export default function LoginScreen() {
 
     return (
         <View style={styles.authContainer}>
+            <Image
+                source={require('@/assets/images/logo.png')}
+                style={{
+                    width: 180, 
+                    height: 180,
+                    alignSelf: 'center',
+                    resizeMode: 'contain'
+                }}
+            />
             <Text style={styles.title}>RecallRover</Text>
                 <View style={{alignItems: 'flex-start', marginLeft: 30}}>
                 <TextInput 
