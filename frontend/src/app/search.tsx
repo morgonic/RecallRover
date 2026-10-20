@@ -332,6 +332,7 @@ export default function SearchScreen() {
                 <FlatList
                     data={results}
                     numColumns={3}
+                    columnWrapperStyle={{justifyContent: 'center'}}
                     keyExtractor={(recall) => String(recall.RecallID)}
                     renderItem={({item}) => (
                         <Pressable 
