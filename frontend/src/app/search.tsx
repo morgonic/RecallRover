@@ -1,6 +1,6 @@
 // Search screen
 
-import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal } from 'react-native';
+import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal, useWindowDimensions } from 'react-native';
 import { styles } from './styles';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken } from "./storage";
@@ -26,6 +26,17 @@ function formatDate(oldDate: string) {
 export default function SearchScreen() {
     const [checkingAuth, setCheckingAuth] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
+
+    const windowWidth = useWindowDimensions().width
+
+    // change flatlist numcolumns based on window width (cards are 300 width)
+    const numberOfColumns = (
+        (windowWidth <= 900) ? 2 :
+        (windowWidth <= 1200) ? 3 : 
+        (windowWidth <= 1500) ? 4 : 
+        (windowWidth <= 1800) ? 5 : 
+        6
+    )
 
     const [productName, setProductName] = useState('')
     const [productBrand, setProductBrand] = useState('')
@@ -331,8 +342,9 @@ export default function SearchScreen() {
             ) : (!loading && (results.length > 0)) ? (
                 <FlatList
                     data={results}
-                    numColumns={3}
+                    numColumns={numberOfColumns}
                     columnWrapperStyle={{justifyContent: 'center'}}
+                    key={numberOfColumns.toString()}
                     keyExtractor={(recall) => String(recall.RecallID)}
                     renderItem={({item}) => (
                         <Pressable 
