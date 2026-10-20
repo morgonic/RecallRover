@@ -195,6 +195,7 @@ export default function WatchListScreen() {
                     data={watchedProducts}
                     numColumns={numberOfColumns}
                     keyExtractor={(product) => String(product.id)}
+                    columnWrapperStyle={{justifyContent: 'center'}}
                     key={numberOfColumns.toString()}
                     renderItem={({ item }) => (
                         <View style={[styles.resultsCard, {
