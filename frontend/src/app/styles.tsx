@@ -84,6 +84,14 @@ export const styles = StyleSheet.create({
         marginTop: 20,
         marginHorizontal: 10
     },
+    activeNavButton: {
+        fontSize: 18,
+        textDecorationLine: 'underline',
+        color: '#000',
+        marginTop: 20,
+        marginHorizontal: 10,
+        fontWeight: 'bold'
+    },
     navButtonDivider: {
         fontSize: 18,
         color: '#000',

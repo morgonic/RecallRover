@@ -1,6 +1,6 @@
 import { deleteToken } from "@/app/storage";
 import { styles } from "@/app/styles";
-import { Link, router } from "expo-router";
+import { Link, router, usePathname } from "expo-router";
 import { Pressable, View, Text } from "react-native";
 
 interface NavBarProps {
@@ -11,6 +11,9 @@ interface NavBarProps {
 
 export function NavBar(props: NavBarProps) {
 
+    // currently selected path
+    const currentPath = usePathname()
+
     async function onLogOut() {
         await deleteToken();
         router.replace('/login');
@@ -18,16 +21,16 @@ export function NavBar(props: NavBarProps) {
     
     return (
         <View style={styles.navigationBar}>
-            <Link href="/search" style={styles.navButton}>
+            <Link href="/search" style={[styles.navButton, (currentPath == '/search' && styles.activeNavButton)]}>
                 Search
             </Link>
             <Text style={styles.navButtonDivider}> | </Text>
-            <Link href="/" style={styles.navButton}>
+            <Link href="/" style={[styles.navButton, (currentPath == '/' && styles.activeNavButton)]}>
                 Recall Feed
             </Link>
             <Text style={styles.navButtonDivider}> | </Text>
             {props.loggedIn ? (
-                <Link href="/watch-list" style={styles.navButton}>
+                <Link href="/watch-list" style={[styles.navButton, (currentPath == '/watch-list' && styles.activeNavButton)]}>
                     Watch List
                 </Link>
             ) : (
