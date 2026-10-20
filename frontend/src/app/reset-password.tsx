@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable } from "react-native";
+import { View, Text, TextInput, Pressable, Image } from "react-native";
 import { styles } from "./styles";
 import { useState } from "react";
 import Ionicons from "@react-native-vector-icons/ionicons";
@@ -105,6 +105,15 @@ export default function ResetPassword() {
 
     return (
          <View style={styles.authContainer}>
+            <Image
+                source={require('@/assets/images/logo.png')}
+                style={{
+                    width: 180, 
+                    height: 180,
+                    alignSelf: 'center',
+                    resizeMode: 'contain'
+                }}
+            />
             <Text style={styles.title}>Reset Password</Text>
             <Text style={styles.subtitleText}>Enter your new password twice to reset.</Text>
                 <View style={{alignItems: 'flex-start', marginLeft: 30}}>
