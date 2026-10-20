@@ -384,6 +384,9 @@ export default function SearchScreen() {
                             >
                                 {item.Hazard}
                             </Text>
+                            <Text style={[styles.smallSubtitleText, {textAlign: 'center', backgroundColor: '#f0f3f7', borderRadius: 20}]}>
+                                Click to view more details.
+                            </Text>
                         </Pressable>
                     )}
                 />
