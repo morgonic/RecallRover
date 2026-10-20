@@ -285,6 +285,7 @@ export default function SearchScreen() {
                 <TextInput 
                     style={[styles.textinput, {width: bigSearchBar, maxWidth: 300}]}
                     onChangeText={setProductName}
+                    onSubmitEditing={onSearchButton}
                     value={productName}
                     placeholder='Product Name'
                     placeholderTextColor={'grey'}
@@ -292,6 +293,7 @@ export default function SearchScreen() {
                 <TextInput 
                     style={[styles.textinput, {width: littleSearchBar, maxWidth: 220}]}
                     onChangeText={setProductBrand}
+                    onSubmitEditing={onSearchButton}
                     value={productBrand}
                     placeholder='Brand'
                     placeholderTextColor={'grey'}
@@ -299,6 +301,7 @@ export default function SearchScreen() {
                 <TextInput 
                     style={[styles.textinput, {width: littleSearchBar, maxWidth: 220}]}
                     onChangeText={setProductModel}
+                    onSubmitEditing={onSearchButton}
                     value={productModel}
                     placeholder='Model Number'
                     placeholderTextColor={'grey'}
