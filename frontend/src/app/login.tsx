@@ -8,6 +8,7 @@ import { deleteGuest, setGuest, setToken } from '@/app/storage';
 import validator from 'validator';
 import { styles } from './styles';
 import { ForgotPasswordModal } from '../../components/ForgotPasswordModal';
+import { ForgotPasswordConfirmationModal } from '../../components/ForgotPasswordConfirmationModal';
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -22,6 +23,7 @@ export default function LoginScreen() {
     const [loginError, setLoginError] = useState('')
 
     const [forgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false)
+    const [forgotPasswordConfirmationModalVisible, setForgotPasswordConfirmationModalVisible] = useState(false)
 
 
     {/*function called when log in button pressed*/}
@@ -176,6 +178,16 @@ export default function LoginScreen() {
             >
                 <ForgotPasswordModal
                     setForgotPasswordModalVisible={setForgotPasswordModalVisible}
+                    setForgotPasswordConfirmationModalVisible={setForgotPasswordConfirmationModalVisible}
+                />
+            </Modal>
+
+            <Modal
+                visible={forgotPasswordConfirmationModalVisible}
+                transparent={true}
+            >
+                <ForgotPasswordConfirmationModal
+                    setForgotPasswordConfirmationModalVisible={setForgotPasswordConfirmationModalVisible}
                 />
             </Modal>
         </View>

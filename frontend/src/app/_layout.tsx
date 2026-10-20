@@ -8,5 +8,6 @@ export default function RootLayout() {
     <Stack.Screen name="index" options={{headerShown: false, title: 'Recall Feed'}} />
     <Stack.Screen name="search" options={{headerShown: false, title: 'Search Recalls'}} />
     <Stack.Screen name="watch-list" options={{headerShown: false, title: 'Watch List'}} />
+    <Stack.Screen name="reset-password" options={{headerShown: false, title: 'Reset Password'}}/>
   </Stack>);
 }
