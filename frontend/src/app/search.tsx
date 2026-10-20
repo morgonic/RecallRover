@@ -1,6 +1,6 @@
 // Search screen
 
-import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal } from 'react-native';
+import { FlatList, Pressable, Text, TextInput, View, Image, ActivityIndicator, Modal, useWindowDimensions } from 'react-native';
 import { styles } from './styles';
 import { useEffect, useState } from 'react';
 import { deleteToken, getGuest, getToken } from "./storage";
@@ -29,6 +29,9 @@ export default function SearchScreen() {
     const [loggedIn, setLoggedIn] = useState(false);
 
     const numberOfColumns = FlatListColumns()
+
+    const bigSearchBar = useWindowDimensions().width / 3
+    const littleSearchBar = bigSearchBar / 2
 
     const [productName, setProductName] = useState('')
     const [productBrand, setProductBrand] = useState('')
@@ -280,21 +283,21 @@ export default function SearchScreen() {
             <View style={{height: 14}}/>
             <View style={{flexDirection: 'row'}}>
                 <TextInput 
-                    style={styles.textinput}
+                    style={[styles.textinput, {width: bigSearchBar, maxWidth: 300}]}
                     onChangeText={setProductName}
                     value={productName}
                     placeholder='Product Name'
                     placeholderTextColor={'grey'}
                 />
                 <TextInput 
-                    style={[styles.textinput, {width: 220}]}
+                    style={[styles.textinput, {width: littleSearchBar, maxWidth: 220}]}
                     onChangeText={setProductBrand}
                     value={productBrand}
                     placeholder='Brand'
                     placeholderTextColor={'grey'}
                 />
                 <TextInput 
-                    style={[styles.textinput, {width: 220}]}
+                    style={[styles.textinput, {width: littleSearchBar, maxWidth: 220}]}
                     onChangeText={setProductModel}
                     value={productModel}
                     placeholder='Model Number'
