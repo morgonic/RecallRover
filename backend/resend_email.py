@@ -5,12 +5,15 @@ import resend
 import logging
 from resend.exceptions import ResendError
 from dotenv import load_dotenv
+from urllib.parse import urlencode
 
 # loading environment variables from .env file
 load_dotenv()
 
 # resend api key
 resend.api_key = os.getenv('RESEND_API_KEY')
+# frontend url
+FRONT_URL = os.getenv('CORS_ORIGINS')
 
 # basic config for logger
 logging.basicConfig(
@@ -20,6 +23,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# function to send recall email alert
 def send_email_alert(
     email: str, 
     product_name: str | None,
@@ -50,6 +54,38 @@ def send_email_alert(
     try:
         sent_email = resend.Emails.send(params)
         logger.info(f'Recall alert email was sent: {sent_email}')
+        return sent_email
+    # catch exception
+    except ResendError as error:
+        logger.error(error)
+        return None
+
+# function to send reset password email
+def send_reset_password_email(email: str, token: str):
+    # reset password link with token
+    token_param = urlencode({'token': token})
+    reset_link = f'{FRONT_URL}/reset-password?{token_param}'
+    # if no token, link will not work, return none
+    if (token_param == None):
+        logger.error('Reset password token was invalid. Did not send email.')
+        return None
+    # email params with html body
+    params: resend.Emails.SendParams = {
+        'from': 'RecallRover <no-reply@recall-rover.com>',
+        'to': email,
+        'subject': 'Reset Password for RecallRover',
+        'html': f"""
+            <h2>Reset Password Request</h2>
+            <p>Click the link below to reset your password for <strong>RecallRover</strong>.</p>
+            <p>If you did not request a password reset, ignore this email.</p>
+            <p><a href='{reset_link}'><strong>Reset Password Link</strong></a></p>
+            <h3>Thank you,<br>RecallRover</h3>
+        """
+    }
+    # send email
+    try:
+        sent_email = resend.Emails.send(params)
+        logger.info(f'Reset password email was sent: {sent_email}')
         return sent_email
     # catch exception
     except ResendError as error:

@@ -76,7 +76,6 @@ app.include_router(
     prefix="/auth",
     tags=["auth"]
 )
-## OPTIONAL: reset password functionality might be added later
 # router for /auth/forgot-password and /auth/reset-password endpoints
 app.include_router(
     fastapi_users.get_reset_password_router(),

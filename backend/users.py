@@ -6,6 +6,7 @@ from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin, models
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
 from fastapi_users.db import SQLAlchemyUserDatabase
 from database import User, get_user_db
+from resend_email import send_reset_password_email
 from dotenv import load_dotenv
 import os
 
@@ -17,15 +18,16 @@ SECRET = os.getenv("JWT_SECRET")
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
+    reset_password_token_secret = os.getenv('RESET_SECRET')
+
     async def on_after_register(self, user: User, request: Request | None = None):
         print(f"User {user.id} has registered.")
 
     async def on_after_login(self, user: User, request: Request | None = None, response: Response | None = None):
         print(f"User {user.id} has logged in.")
 
-    ## OPTIONAL: reset password functionality might be added later
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None):
-        print(f"User {user.id} has forgotten their password. Reset token: {token}")
+        send_reset_password_email(user.email, token)
 
 # function for getting user manager
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):
