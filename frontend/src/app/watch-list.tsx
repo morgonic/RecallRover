@@ -1,6 +1,6 @@
 // Watch List screen
 
-import { Text, View, Modal, ActivityIndicator, FlatList, Pressable } from 'react-native';
+import { Text, View, Modal, ActivityIndicator, FlatList, Pressable, useWindowDimensions } from 'react-native';
 import { styles } from './styles';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -18,6 +18,17 @@ export default function WatchListScreen() {
     
     const [checkingAuth, setCheckingAuth] = useState(false)
     const [loggedIn, setLoggedIn] = useState(false)
+
+    const windowWidth = useWindowDimensions().width
+    
+    // change flatlist numcolumns based on window width (cards are 300 width)
+    const numberOfColumns = (
+        (windowWidth <= 900) ? 2 :
+        (windowWidth <= 1200) ? 3 : 
+        (windowWidth <= 1500) ? 4 : 
+        (windowWidth <= 1800) ? 5 : 
+        6
+    )
 
     const [error, setError] = useState<string | null>(null)
 
@@ -182,8 +193,9 @@ export default function WatchListScreen() {
             ) : (
                 <FlatList
                     data={watchedProducts}
-                    numColumns={3}
+                    numColumns={numberOfColumns}
                     keyExtractor={(product) => String(product.id)}
+                    key={numberOfColumns.toString()}
                     renderItem={({ item }) => (
                         <View style={[styles.resultsCard, {
                             alignItems: 'center'
