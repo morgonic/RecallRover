@@ -6,6 +6,12 @@ from matching import get_match_label, UPCMatchStrategy, ModelMatchStrategy
 from database import WatchedProduct
 from schemas import RecallDetails
 
+
+
+# ============================== #
+### tests for helper functions ###
+# ============================== #
+
 # testing normalize_upc helper function for:
 # stripping leading zeroes, letters, whitespace, returning None
 @pytest.mark.parametrize('upc, expected', [

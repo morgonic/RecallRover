@@ -10,12 +10,6 @@ import asyncio
 
 # helper for building recallsummary model
 def build_recall_summary(recall_details: RecallDetails):
-        # show id, title, # of products for testing
-        print(f'\nRecallID: {recall_details.RecallID}\nTitle: {recall_details.Title}\nNumber of Products: {len(recall_details.Products)}')
-        # show product names, # of units
-        for i, product in enumerate(recall_details.Products):
-            print(f'Product Name {i+1}: {product.Name}')
-            print(f'Number of Units: {product.NumberOfUnits}')
 
         # build product name to be one name if only one or the first name + # more if more than one
         product_names = []
@@ -47,9 +41,6 @@ def build_recall_summary(recall_details: RecallDetails):
             ProductName=product_name,
             Hazard=recall_details.Hazards[0]['Name'] if recall_details.Hazards else None
         )
-        # printing summary details for testing
-        print(f'\n[Recall Summary]\n{recall_summary}')
-        print(f'\nSummary Product Name: {recall_summary.ProductName}')
 
         return recall_summary
 
