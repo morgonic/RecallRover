@@ -118,7 +118,7 @@ export const styles = StyleSheet.create({
         shadowColor: '#0c1524a8',
         shadowOffset: {width: 4, height: 4},
         shadowRadius: 2,
-        height: 400,
+        height: 420,
         width: 300,
         borderRadius: 10,
         margin: 10,
@@ -138,7 +138,7 @@ export const styles = StyleSheet.create({
     resultsImage: {
         height: 150,
         width: 200,
-        marginTop: 20,
+        marginTop: 10,
         alignSelf: 'center',
         resizeMode: 'contain'
     },
@@ -342,6 +342,6 @@ export const styles = StyleSheet.create({
         textAlign: 'center', 
         backgroundColor: '#f0f3f7', 
         borderRadius: 20,
-        marginTop: 10
+        marginTop: 'auto'
     }
 })
