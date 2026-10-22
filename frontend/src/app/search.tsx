@@ -13,16 +13,11 @@ import { NavBar } from '../../components/NavBar';
 import { GuestAuthModal } from '../../components/GuestAuthModal';
 import { RecallDetailsModal } from '../../components/RecallDetailsModal';
 import { BarcodeScannerModal } from '../../components/BarcodeScannerModal';
-import { FlatListColumns } from '../../components/FlatListColumns';
+import { formatDate, FlatListColumns } from '../../utils/helpers'
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-// function for formatting the date from iso to localdatestring
-function formatDate(oldDate: string) {
-    let newDate = new Date(oldDate)
-    return newDate.toLocaleDateString()
-}
 
 export default function SearchScreen() {
     const [checkingAuth, setCheckingAuth] = useState(true);

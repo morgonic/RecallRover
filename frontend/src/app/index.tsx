@@ -10,7 +10,7 @@ import { RecallDetailsModal } from "../../components/RecallDetailsModal";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { Dropdown } from 'react-native-element-dropdown'
 import { Category } from '../../types/recall'
-import { FlatListColumns } from "../../components/FlatListColumns";
+import { formatDate, formatFilterDate, FlatListColumns } from '../../utils/helpers'
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -42,23 +42,6 @@ export default function Index() {
 
   const [guestAuthModalVisible, setGuestAuthModalVisible] = useState(false);
   const [recallDetailsModalVisible, setRecallDetailsModalVisible] = useState(false);
-
-  // function for formatting the date from iso to localdatestring
-  function formatDate(oldDate: string) {
-    let newDate = new Date(oldDate)
-    return newDate.toLocaleDateString()
-  }
-
-  // function for formatting start/end date strings
-  function formatFilterDate(filterDate: string) {
-    // split up by -
-    const dateParts = filterDate.split('-')
-    // put split up parts in array
-    const [year, month, day] = dateParts
-    // format as month/day/year
-    const formattedDate = `${month}/${day}/${year}`
-    return formattedDate
-  }
 
   // function to load the recall feed using offset
   const loadFeed = async (
