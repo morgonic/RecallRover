@@ -9,7 +9,7 @@ import { WatchedProductInput, WatchedProductRead } from '../../types/watched-pro
 import { WatchedProductModal } from '../../components/WatchedProductModal';
 import { NavBar } from '../../components/NavBar';
 import { RecallDetailsModal } from '../../components/RecallDetailsModal';
-import { FlatListColumns } from '../../components/FlatListColumns';
+import { FlatListColumns } from '../../utils/helpers'
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
