@@ -4,6 +4,7 @@ import { View, Text, ScrollView, ActivityIndicator, Pressable, Image, StatusBar,
 import { RecallDetails } from "../types/recall";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { RecallDetailsSection } from "./RecallDetailsSection";
+import { formatDate } from '../utils/helpers'
 
 // FastAPI url for fetch calls
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -20,11 +21,6 @@ export function RecallDetailsModal(props: RecallDetailsModalProps) {
     const [error, setError] = useState<string | null>(null)
     const [recall, setRecall] = useState<RecallDetails | null>(null)
 
-    // function for formatting the date from iso to localdatestring
-    function formatDate(oldDate: string) {
-        let newDate = new Date(oldDate)
-        return newDate.toLocaleDateString()
-    }
 
     useEffect(() => {
         if (props.recallID == null) {
